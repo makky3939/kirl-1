@@ -1,70 +1,163 @@
 #!/usr/bin/ruby
 # -*- coding: utf-8 -*-
-require "rubygems"
-require "sqlite3"
 
-file_path = "jbisc.min.txt"
+require 'rubygems'
+require 'sqlite3'
 
-@records = []
+# FILE_PATH = 'jbisc.txt'
+JBISC_FILE_PATH = 'jbisc.min.txt'
+DB_FILE_PATH = 'library.db'
+
+records = []
 
 query = {
-create:<<SQL,
+create: {
+book:<<SQL,
 CREATE TABLE book(
   nbc text,
-  isbn text,
-  tr text,
-  pub text
+  title text,
+  date text,
+  phys text,
+  ed text
 );
 SQL
 
-insert:<<SQL,
-  insert into book values(?, ?, ?, ?);
+isbn:<<SQL,
+CREATE TABLE isbn(
+  nbc text,
+  isbn text
+);
+SQL
+},
+
+insert: {
+book:<<SQL,
+  insert into book values(?, ?, ?, ?, ?);
 SQL
 
-select:<<SQL,
+isbn:<<SQL,
+  insert into isbn values(?, ?);
+SQL
+},
+
+select: {
+book:<<SQL,
   select * from book;
 SQL
 
-drop:<<SQL
-  drop table book;
+isbn:<<SQL,
+  select * from isbn;
 SQL
 }
 
-def record_store (nbc, isbn, tr, pub)
-  @records.push({nbc: nbc, isbn: isbn, tr: tr, pub: pub})
+
+}
+
+def defaultRecord
+  {
+    'NBC' => [], #
+    'ISBN' => [], #
+    'TITLE' => [], #
+    'AUTHOR' => [],
+    'PUB' => [], 
+    'DATE' => [], #
+    'PHYS' => [], #
+    'NOTE' => [],
+    'ED' => [], # 版表示
+    'SERIES' => [],
+    'TITLEHEADING' => [],
+    'AUTHORHEADING' => [],
+    'HOLDINGSRECORD' => [],
+    'HOLDINGLOC' => [],
+    'HOLDINGPHYS' => [] # ???
+  }
 end
 
+def sliceAttribute input
+  line = input.gets
+  return nil if !line
 
-open(file_path, "r") do |input|
-  while line = input.gets
-    if /^NBC:\s+/ =~ line
-      nbc = line.chomp.gsub(/^NBC:\s+/, "")
-    elsif /^ISBN:\s+/ =~ line
-      isbn = line.chomp.gsub(/^ISBN:\s+/, "")
-    elsif /^TR:\s+/ =~ line
-      tr = line.chomp.gsub(/^TR:\s+/, "").sub(/\s+\/\s+/, "|")
-    elsif /^PUB:\s+/ =~ line
-      pub = line.chomp.gsub(/^PUB:\s+/, "")
-    elsif /^\*/ =~ line
-      record_store nbc, isbn, tr, pub
-      nbc = isbn = tr = pub = ""
-      printf("Load Records: #{@records.length}\r")
+  row = line.chomp.split(/:\s*/, 2)
+
+  if row[0] == '*'
+    return nil
+  end
+
+  if row[0] == 'TR'
+    value = row[1].split(/\s+\/\s+/, 2)
+    row = []
+    row.push ['TITLE', value[0]]
+    row.push ['AUTHOR', value[1]]
+    return row
+  end
+
+  if row[0] == 'PUB'
+    value = row[1].split(/\s*,\s+/, 2)
+    row = []
+    row.push ['PUB', value[0]]
+    row.push ['DATE', value[1]]
+    return row
+  end
+
+  return [row]
+end
+
+def getRecord input
+  record = defaultRecord
+
+  while attributes = sliceAttribute(input)
+    attributes.each do |attribute|
+      record[attribute[0]].push(attribute[1])
     end
   end
+
+  if record.values.flatten.empty?
+    return nil
+  else
+    return record
+  end
 end
 
-puts "[OK]\n"
-#@records.each do |row|
-#  puts [row[:nbc], row[:isbn], row[:tr], row[:pub]].join " | "
-#end
 
-SQLite3::Database.new "library.db" do |db|
-  db.execute query[:drop]
-  db.execute query[:create]
-  @records.each_with_index do |row, index|
-    db.execute query[:insert], row[:nbc], row[:isbn], row[:tr], row[:pub]
-    printf("Insert Query: #{index}\r")
+
+table = {
+  "book" => [],
+  "isbn" => []
+}
+
+open(JBISC_FILE_PATH, 'r') do |input|
+  puts "Start getRecord"
+  while record = getRecord(input)
+    records.push(record)
+
+    table["book"].push [record["NBC"], record["TITLE"], record["DATE"], record["PHYS"], record["ED"]]
+
+    record["ISBN"].each do |isbn|
+      table["isbn"].push [record["NBC"], isbn]
+    end
+
+    print("Records: #{records.size}\r")
   end
-  puts "[OK]\n"
-  db.execute(query[:select]).length
+  puts "\nEnd getRecord"
+end
+
+
+
+File.unlink DB_FILE_PATH if File.exist? DB_FILE_PATH
+SQLite3::Database.new DB_FILE_PATH do |db|
+  query[:create].each do |key, val|
+    puts "Create table: #{key}"
+    db.execute val
+  end
+
+  table["book"].each do |val|
+    db.execute query[:insert][:book], val[0], val[1], val[2], val[3], val[4], val[5]
+  end
+
+  table["isbn"].each do |val|
+    db.execute query[:insert][:isbn], val[0], val[1]
+  end
+
+  p db.execute(query[:select][:book])
+  p db.execute(query[:select][:isbn])
 end
