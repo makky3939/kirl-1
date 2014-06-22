@@ -1,0 +1,21 @@
+extends layout/default
+
+//- block title
+//-   title 
+
+block contents
+  .container
+    .row
+      .searchbox
+        .searchbox-simple
+          .input-group
+            p 検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)
+          .input-group
+            input.form-control(type="text")
+            span.input-group-btn
+              button.btn.btn-default(type="button")
+                span.glyphicon.glyphicon-search
+
+  .container
+    .row
+      a(href="result.html") result

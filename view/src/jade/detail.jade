@@ -1,0 +1,56 @@
+extends layout/default
+
+block title
+  title 詳細情報
+
+block contents
+  .container
+    h1 {title} の詳細情報
+    .col-md-5
+      .panel.book
+        p NBC - ISBN
+
+        .book-head
+          p.book-head_series SERIES
+          h2.book-head_title
+            |TITLE
+            small.book-head_ed ED
+
+        p.book-author AUTHOR
+
+        .book-publish
+          p PUB - DATE
+          p PHYS
+
+    .col-md-7
+      .panel.panel-default
+        .panel-body
+          h4 NOTE
+          ul
+            li hoge
+            li ...
+
+          h4 TITLEHEADING
+          ul
+            li hoge
+            li ...
+
+          h4 AUTHORHEADING
+          ul
+            li hoge
+            li ...
+
+          h4 HOLDINGSRECORD
+          ul
+            li hoge
+            li ...
+
+          h4 HOLDINGLOC
+          ul
+            li hoge
+            li ...
+
+          h4 HOLDINGPHYS
+          ul
+            li hoge
+            li ...

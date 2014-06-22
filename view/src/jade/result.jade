@@ -1,0 +1,51 @@
+extends layout/default
+
+block title
+  title 検索結果
+
+block contents
+  .container
+    h1 検索結果
+    p
+      b {hoge}
+      |の検索結果 
+      b 1000件
+      |中
+      b 1-20件
+      |を表示しています
+
+    table.table.table-border
+      thead
+        tr
+          th NBC
+          th Title
+          th Author
+          th Pub
+          th Isbn
+      tbody
+        - for i in [,,,,,,,,,,,,,,,,,,,,]
+          tr
+            td hoge
+            td
+              a(href="detail.html") hoge
+            td hoge
+            td hoge
+            td hoge
+
+    .text-center
+      ul.pagination
+        li.disabled
+          a(href="#") &laquo;
+        li.active
+          a(href="#")
+            |1
+            span.sr-only (current)
+        li
+          a(href="#") 2
+        li
+          a(href="#") 3
+        li
+          a(href="#") 4
+        li.disabled
+          a(href="#") &raquo;
+
