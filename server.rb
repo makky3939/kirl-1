@@ -5,7 +5,7 @@ module WEBrick
   end
 end
 server = WEBrick::HTTPServer.new({
-  :DocumentRoot => 'dst',
+  :DocumentRoot => './',
   :CGIInterpreter => WEBrick::HTTPServlet::CGIHandler::Ruby,
   :Port => '8080',
 })

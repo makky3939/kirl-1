@@ -4,8 +4,8 @@
 require 'rubygems'
 require 'sqlite3'
 
-# FILE_PATH = 'jbisc.txt'
-JBISC_FILE_PATH = 'jbisc.min.txt'
+JBISC_FILE_PATH = 'jbisc.txt'
+# JBISC_FILE_PATH = 'jbisc.min.txt'
 DB_FILE_PATH = 'library.db'
 
 records = []
@@ -151,7 +151,7 @@ SQLite3::Database.new DB_FILE_PATH do |db|
   end
 
   table["book"].each do |val|
-    db.execute query[:insert][:book], val[0], val[1], val[2], val[3], val[4], val[5]
+    db.execute query[:insert][:book], val[0], val[1], val[2], val[3], val[4]
   end
 
   table["isbn"].each do |val|
