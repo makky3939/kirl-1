@@ -8,36 +8,123 @@ JBISC_FILE_PATH = 'jbisc.txt'
 # JBISC_FILE_PATH = 'jbisc.min.txt'
 DB_FILE_PATH = 'library.db'
 
-records = []
-
 query = {
 create: {
-book:<<SQL,
-CREATE TABLE book(
-  nbc text,
-  title text,
-  date text,
-  phys text,
-  ed text
-);
-SQL
+  book:<<-SQL,
+    CREATE TABLE book(
+      nbc text,
+      title text,
+      author text,
+      pub text,
+      date text,
+      phys text
+    );
+  SQL
 
-isbn:<<SQL,
-CREATE TABLE isbn(
-  nbc text,
-  isbn text
-);
-SQL
-},
+  isbn:<<-SQL,
+    CREATE TABLE isbn(
+      nbc text,
+      isbn text
+    );
+  SQL
+
+  note:<<-SQL,
+    CREATE TABLE note(
+      nbc text,
+      note text
+    );
+  SQL
+
+  ed:<<-SQL,
+    CREATE TABLE ed(
+      nbc text,
+      ed text
+    );
+  SQL
+
+  series:<<-SQL,
+    CREATE TABLE series(
+      nbc text,
+      series text
+    );
+  SQL
+
+  titleheading:<<-SQL,
+    CREATE TABLE titleheading(
+      nbc text,
+      titleheading text
+    );
+  SQL
+
+  authorheading:<<-SQL,
+    CREATE TABLE authorheading(
+      nbc text,
+      authorheading text
+    );
+  SQL
+
+  holdingsrecord:<<-SQL,
+    CREATE TABLE holdingsrecord(
+      nbc text,
+      holdingsrecord text
+    );
+  SQL
+
+  holdingloc:<<-SQL,
+    CREATE TABLE holdingloc(
+      nbc text,
+      holdingloc text
+    );
+  SQL
+
+  holdingphys:<<-SQL,
+    CREATE TABLE holdingphys(
+      nbc text,
+      holdingphys text
+    );
+  SQL
+  },
 
 insert: {
-book:<<SQL,
-  insert into book values(?, ?, ?, ?, ?);
-SQL
+book:<<-SQL,
+    insert into book values(?, ?, ?, ?, ?, ?);
+  SQL
 
-isbn:<<SQL,
-  insert into isbn values(?, ?);
-SQL
+isbn:<<-SQL,
+    insert into isbn values(?, ?);
+  SQL
+
+note:<<-SQL,
+    insert into note values(?, ?);
+  SQL
+
+ed:<<-SQL,
+    insert into ed values(?, ?);
+  SQL
+
+series:<<-SQL,
+    insert into series values(?, ?);
+  SQL
+
+titleheading:<<-SQL,
+    insert into titleheading values(?, ?);
+  SQL
+
+authorheading:<<-SQL,
+    insert into authorheading values(?, ?);
+  SQL
+
+holdingsrecord:<<-SQL,
+    insert into holdingsrecord values(?, ?);
+  SQL
+
+holdingloc:<<-SQL,
+    insert into holdingloc values(?, ?);
+  SQL
+
+holdingphys:<<-SQL,
+    insert into holdingphys values(?, ?);
+  SQL
 },
 
 select: {
@@ -58,18 +145,18 @@ def defaultRecord
     'NBC' => [], #
     'ISBN' => [], #
     'TITLE' => [], #
-    'AUTHOR' => [],
-    'PUB' => [], 
+    'AUTHOR' => [], #
+    'PUB' => [], #
     'DATE' => [], #
     'PHYS' => [], #
-    'NOTE' => [],
-    'ED' => [], # 版表示
-    'SERIES' => [],
+    'NOTE' => [], #
+    'ED' => [], #
+    'SERIES' => [], #
     'TITLEHEADING' => [],
     'AUTHORHEADING' => [],
     'HOLDINGSRECORD' => [],
     'HOLDINGLOC' => [],
-    'HOLDINGPHYS' => [] # ???
+    'HOLDINGPHYS' => [] 
   }
 end
 
@@ -119,45 +206,63 @@ def getRecord input
 end
 
 
-
-table = {
-  "book" => [],
-  "isbn" => []
-}
-
-open(JBISC_FILE_PATH, 'r') do |input|
-  puts "Start getRecord"
-  while record = getRecord(input)
-    records.push(record)
-
-    table["book"].push [record["NBC"], record["TITLE"], record["DATE"], record["PHYS"], record["ED"]]
-
-    record["ISBN"].each do |isbn|
-      table["isbn"].push [record["NBC"], isbn]
-    end
-
-    print("Records: #{records.size}\r")
-  end
-  puts "\nEnd getRecord"
-end
-
-
+records = []
 
 File.unlink DB_FILE_PATH if File.exist? DB_FILE_PATH
+
 SQLite3::Database.new DB_FILE_PATH do |db|
   query[:create].each do |key, val|
     puts "Create table: #{key}"
     db.execute val
   end
 
-  table["book"].each do |val|
-    db.execute query[:insert][:book], val[0], val[1], val[2], val[3], val[4]
-  end
+  open(JBISC_FILE_PATH, 'r') do |input|
+    puts "Start getRecord"
+    while record = getRecord(input)
+      records.push record
+      db.execute query[:insert][:book], record["NBC"], record["TITLE"], record["AUTHOR"], record["PUB"], record["DATE"], record["PHYS"]
 
-  table["isbn"].each do |val|
-    db.execute query[:insert][:isbn], val[0], val[1]
-  end
+      record["ISBN"].each do |isbn|
+        db.execute query[:insert][:isbn], record["NBC"], isbn
+      end
 
-  p db.execute(query[:select][:book])
-  p db.execute(query[:select][:isbn])
+      record["NOTE"].each do |note|
+        db.execute query[:insert][:note], record["NBC"], note
+      end
+
+      record["ED"].each do |ed|
+        db.execute query[:insert][:ed], record["NBC"], ed
+      end
+
+      record["SERIES"].each do |series|
+        db.execute query[:insert][:series], record["NBC"], series
+      end
+
+      record["TITLEHEADING"].each do |titleheading|
+        db.execute query[:insert][:titleheading], record["NBC"], titleheading
+      end
+
+      record["AUTHORHEADING"].each do |authorheading|
+        db.execute query[:insert][:authorheading], record["NBC"], authorheading
+      end
+
+      record["HOLDINGSRECORD"].each do |holdingsrecord|
+        db.execute query[:insert][:holdingsrecord], record["NBC"], holdingsrecord
+      end
+
+      record["HOLDINGLOC"].each do |holdingloc|
+        db.execute query[:insert][:holdingloc], record["NBC"], holdingloc
+      end
+
+      record["HOLDINGPHYS"].each do |holdingphys|
+        db.execute query[:insert][:holdingphys], record["NBC"], holdingphys
+      end
+      print("Records: #{records.size}\r")
+    end
+    puts "\nEnd getRecord"
+
+    query[:create].each do |key, val|
+      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}"
+    end
+  end
 end
