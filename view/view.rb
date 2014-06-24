@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 class View
-  def initialize(title="opac", type="top", params, data, count)
+  def initialize(title='opac', type='top', params, data, count)
     @params = params
     @title = title_tag title
     @head = head
     @page_header = head_tag title
 
     case type
-      when "result" then
+      when 'result' then
         _table = table(data)
         _pagenation = pagenation(count[0][0])
         @body = body(@page_header + _table + _pagenation)
 
-      when "result_error" then
+      when 'result_error' then
         _error = error(data)
         @body = body(@page_header + _error)
 
@@ -22,19 +22,19 @@ class View
   end
 
   def html
-    ["<html>", "</html>"].join(@head + @body)
+    ['<html>', '</html>'].join(@head + @body)
   end
 
   def head
-    ["<head>", "</head>"].join(@title + asset + meta)
+    ['<head>', '</head>'].join(@title + asset + meta)
   end
 
   def title_tag(title)
-    ["<title>", "</title>"].join title
+    ['<title>', '</title>'].join title
   end
 
   def head_tag(text, size=1)
-    ["<h#{size}>", "</h#{size}>"].join text
+    ['<h#{size}>', '</h#{size}>'].join text
   end
 
   def asset
@@ -57,26 +57,38 @@ class View
     DOC
   end
 
-  def body(content = "")
-    ["<body>", "</body>"].join(header + content + footer)
+  def body(content = '')
+    ['<body>', '</body>'].join(header + content + footer)
   end
 
   def table(data)
-    table = ""
-    data.each do |row|
-      tr = ""
-      tr += ["<td>", "</td>"].join row[0]
-      tr += ["<td>", "</td>"].join "<a href=""> #{row[1]}</a>"
-      tr += ["<td>", "</td>"].join row[2]
-      tr += ["<td>", "</td>"].join row[3]
-      tr += ["<td>", "</td>"].join row[4]
-      table += ["<tr>", "</tr>"].join tr
+    table = ''
+    thead = ''
+    tbody = ''
+
+    tr = ''
+    ['NBC', 'TITLE', 'AUTHOR', 'PUB', 'DATE'].each do |th|
+      tr += ['<th>', '</th>'].join th
     end
-    ["<table>", "</table>"].join table
+    thead = ['<thead>', '</thead>'].join tr
+
+    tr = ''
+    data.each do |row|
+      td = ''
+      td += ['<td>', '</td>'].join row[0]
+      td += ['<td>', '</td>'].join "<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>"
+      td += ['<td>', '</td>'].join row[2]
+      td += ['<td>', '</td>'].join row[3]
+      td += ['<td>', '</td>'].join row[4]
+      tr += ['<tr>', '</tr>'].join td
+    end
+    tbody = ['<tbody>', '</tbody>'].join tr
+
+    ['<table>', '</table>'].join(thead + tbody)
   end
 
   def error(data)
-    ["<p>", "</p>"].join(data)
+    ['<p>', '</p>'].join(data)
   end
 
   def pagenation(count)
@@ -85,7 +97,7 @@ class View
       rescue ArgumentError
         0
     end
-    page_sto = (integer_str? @params["offset"]) * 20
+    page_sto = (integer_str? @params['offset']) * 20
     page_sta = page_sto - 20
     list = ""
     ((count/20)+1).times.each do |page|

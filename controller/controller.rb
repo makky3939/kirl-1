@@ -27,7 +27,7 @@ class Query
 
   def select
     <<-SQL
-      SELECT * 
+      SELECT nbc, title, author, pub, date
       FROM book 
       WHERE title 
       LIKE '%#{@keyword}%'
