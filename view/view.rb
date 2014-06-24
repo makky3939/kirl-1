@@ -1,22 +1,21 @@
+# -*- coding: utf-8 -*-
 class View
-  def initialize(title="opac", type="top", data, count, params)
-    puts "Content-type: text/html\r\n"
-    puts ""
-    puts ""
+  def initialize(title="opac", type="top", params, data, count)
     @params = params
     @title = title_tag title
     @head = head
-    @page_header = ["<h1>", "</h1>"].join title
+    @page_header = head_tag title
+
     case type
       when "result" then
-        table = table(data)
-        
-        _pagenation = pagenation(count[0])
-        @body = body(@page_header + table + _pagenation)
+        _table = table(data)
+        _pagenation = pagenation(count[0][0])
+        @body = body(@page_header + _table + _pagenation)
 
       when "result_error" then
         _error = error(data)
         @body = body(@page_header + _error)
+
       else
         @body = body
     end
@@ -32,6 +31,10 @@ class View
 
   def title_tag(title)
     ["<title>", "</title>"].join title
+  end
+
+  def head_tag(text, size=1)
+    ["<h#{size}>", "</h#{size}>"].join text
   end
 
   def asset
