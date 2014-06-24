@@ -57,24 +57,24 @@ class View
     DOC
   end
 
-  def body(content = "")
-    ["<body>", "</body>"].join(header + content + footer)
+  def body(content = '')
+    ['<body>', '</body>'].join(header + content + footer)
   end
 
   def table(data)
-    table = '
-    thead = '
-    tbody = '
+    table = ''
+    thead = ''
+    tbody = ''
 
-    tr = '
+    tr = ''
     ['NBC', 'TITLE', 'AUTHOR', 'PUB', 'DATE'].each do |th|
       tr += ['<th>', '</th>'].join th
     end
     thead = ['<thead>', '</thead>'].join tr
 
-    tr = '
+    tr = ''
     data.each do |row|
-      td = '
+      td = ''
       td += ['<td>', '</td>'].join row[0]
       td += ['<td>', '</td>'].join "<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>"
       td += ['<td>', '</td>'].join row[2]
