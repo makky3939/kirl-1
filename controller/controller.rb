@@ -48,9 +48,18 @@ class Query
   def select_detail
     <<-SQL
       SELECT *
-      FROM book 
-      WHERE nbc 
-      LIKE '#{@nbc}'
+      FROM book
+      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
+      LEFT OUTER JOIN note on book.nbc = note.nbc
+      LEFT OUTER JOIN ed on book.nbc = ed.nbc
+      LEFT OUTER JOIN series on book.nbc = series.nbc
+      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
+      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
+      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
+      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
+      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+
+      WHERE book.nbc = '#{@nbc}'
     SQL
   end
 end

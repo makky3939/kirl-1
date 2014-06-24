@@ -14,7 +14,11 @@ class View
 
     when 'detail'
       _detail = detail(data[0])
-      @body = body(_detail)
+      @body = body(@page_header +_detail)
+
+    when 'index'
+      _form = form()
+      @body = body(_form)
 
     when "result_error", "detail_error"
       _error = error(data)
@@ -131,6 +135,28 @@ class View
     DOC
   end
 
+  def form()
+    <<-DOC
+      <div class="container">
+        <div class="row">
+          <form method="POST" action="result.cgi">
+            <div class="searchbox">
+              <div class="searchbox-simple">
+                <div class="input-group">
+                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+                </div>
+                <div class="input-group">
+                  <input value="" name="keyword" type='text' class='form-control'>
+                  <input type='submit' class='btn btn-default' value="search">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    DOC
+  end
+
   def detail(data)
     li = ""
     data.each do |value|
@@ -144,7 +170,7 @@ class View
       <div id="header">
         <div class="container">
           <div class="row">
-            <div class="col-xs-6 head-title"><a href="index.html">
+            <div class="col-xs-6 head-title"><a href="index.cgi">
                 <h1>opac</h1></a></div>
             <div class="col-xs-6">
               <form method="POST" action="result.cgi">
