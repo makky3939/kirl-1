@@ -25,7 +25,7 @@ def integer_str?(str)
   begin
     int = Integer(str)
   rescue ArgumentError
-    int = 0
+    int = nil
   end
   return int
 end
@@ -34,15 +34,10 @@ def limit(offset=1, limit_size = 20)
   if integer_str? offset
     offset = offset.to_i
   else
-    offset = 0
+    offset = 1
   end
-
-
-    limit = limit_size * offset
-    offset = limit_size*(offset-1)
-    
-    limit = 65 if limit > 65
-  end
+  limit = limit_size
+  offset = (limit_size * (offset - 1))
   "#{offset}, #{limit}"
 end
 
@@ -74,13 +69,11 @@ if keyword != ""
     @count = db.execute(query[:select][:count])
     @result = db.execute(query[:select][:book])
   end
-
   view = View.new('検索結果', 'result', @result, @count[0], @params)
-  puts view.html  
 else
   @result = "検索に失敗しました"
   view = View.new('検索結果', 'result_error', @result, @params)
-  puts view.html
 end
 
-puts cgi.params
+puts view.html  
+puts @params

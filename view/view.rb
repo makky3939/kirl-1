@@ -82,8 +82,8 @@ class View
       rescue ArgumentError
         0
     end
-    page_sta = (integer_str? @params["offset"]) * 20
-    page_sto = page_sta + 20
+    page_sto = (integer_str? @params["offset"]) * 20
+    page_sta = page_sto - 20
     list = ""
     ((count/20)+1).times.each do |page|
       page = page + 1
