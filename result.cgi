@@ -11,10 +11,56 @@ DB_FILE_PATH = 'model/library.db'
 cgi = CGI.new
 keyword =  CGI.escapeHTML cgi["keyword"]
 
+# Pagenation
+limit_size =  CGI.escapeHTML cgi["limit_size"]
+offset =  CGI.escapeHTML cgi["offset"]
+
+@params = {}
+@params["keyword"] = keyword
+@params["limit_size"] = limit_size
+@params["offset"] = offset
+
+
+def integer_str?(str)
+  begin
+    int = Integer(str)
+  rescue ArgumentError
+    int = 0
+  end
+  return int
+end
+
+def limit(offset=1, limit_size = 20)
+  if integer_str? offset
+    offset = offset.to_i
+  else
+    offset = 0
+  end
+
+
+    limit = limit_size * offset
+    offset = limit_size*(offset-1)
+    
+    limit = 65 if limit > 65
+  end
+  "#{offset}, #{limit}"
+end
+
 query = {
 select: {
 book:<<-SQL,
-  select * from book where title like '%#{keyword}%' LIMIT 0, 20;
+  SELECT * 
+  FROM book 
+  WHERE title 
+  LIKE '%#{keyword}%'
+  LIMIT #{limit(cgi['offset'])}
+SQL
+
+count:<<-SQL,
+  SELECT count(*)
+  FROM book 
+  WHERE title 
+  LIKE '%#{keyword}%'
 SQL
 
 isbn:<<SQL,
@@ -23,9 +69,18 @@ SQL
 }
 }
 
-SQLite3::Database.new DB_FILE_PATH do |db|
-  @result = db.execute(query[:select][:book])
+if keyword != ""
+  SQLite3::Database.new DB_FILE_PATH do |db|
+    @count = db.execute(query[:select][:count])
+    @result = db.execute(query[:select][:book])
+  end
+
+  view = View.new('検索結果', 'result', @result, @count[0], @params)
+  puts view.html  
+else
+  @result = "検索に失敗しました"
+  view = View.new('検索結果', 'result_error', @result, @params)
+  puts view.html
 end
 
-view = View.new("検索結果", "result", @result)
-puts view.html
+puts cgi.params
