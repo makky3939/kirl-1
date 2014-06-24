@@ -1,0 +1,30 @@
+{
+  "name": "gulp",
+  "version": "0.0.1",
+  "homepage": "https://github.com/makky3939/gulp",
+  "authors": [
+    "Masaki Kobayashi <makky.4d6b.3f5@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.1.1"
+  },
+  "exportsOverride": {
+    "bootstrap": {
+      "js": "dist/js/bootstrap.min.js",
+      "css": "dist/css/bootstrap.min.css",
+      "fonts": "dist/fonts/*"
+    },
+    "jquery": {
+      "js": "dist/jquery.min.js"
+    }
+  }
+}
