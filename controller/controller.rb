@@ -23,6 +23,7 @@ class Query
     @keyword = params["keyword"]
     @limit = params["limit"]
     @offset = params["offset"]
+    @nbc = params["nbc"]
   end
 
   def select
@@ -41,6 +42,15 @@ class Query
       FROM book 
       WHERE title 
       LIKE '%#{@keyword}%'
+    SQL
+  end
+
+  def select_detail
+    <<-SQL
+      SELECT *
+      FROM book 
+      WHERE nbc 
+      LIKE '#{@nbc}'
     SQL
   end
 end

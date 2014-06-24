@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
 class View
-  def initialize(title='opac', type='top', params, data, count)
+  def initialize(title='opac', type, params, data, count)
     @params = params
     @title = title_tag title
     @head = head
     @page_header = head_tag title
 
     case type
-      when 'result' then
-        _table = table(data)
-        _pagenation = pagenation(count[0][0])
-        @body = body(@page_header + _table + _pagenation)
+    when 'result'
+      _table = table(data)
+      _pagenation = pagenation(count[0][0])
+      @body = body(@page_header + _table + _pagenation)
 
-      when 'result_error' then
-        _error = error(data)
-        @body = body(@page_header + _error)
+    when 'detail'
+      _detail = detail(data[0])
+      @body = body(_detail)
 
-      else
-        @body = body
+    when "result_error", "detail_error"
+      _error = error(data)
+      @body = body(@page_header + _error)
+
+    else
+      @body = body("ページがありません")
     end
   end
 
@@ -88,7 +92,7 @@ class View
   end
 
   def error(data)
-    ['<p>', '</p>'].join(data)
+    ["<p>", "</p>"].join(data)
   end
 
   def pagenation(count)
@@ -125,6 +129,14 @@ class View
         </ul>
       </div>
     DOC
+  end
+
+  def detail(data)
+    li = ""
+    data.each do |value|
+      li += ["<li>", "</li>"].join value
+    end
+    ["<ul>", "</ul>"].join li
   end
 
   def header
