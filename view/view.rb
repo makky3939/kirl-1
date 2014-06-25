@@ -176,13 +176,24 @@ class View
     end
 
     def input_group(n)
-      <<-DOC
-        <div class="input-group">
-          #{select_tag(@attribute, 'input_#{n}_field', :title)}
-          <input value='' name="input_#{n}_text" type='text' class='form-control'>
-          #{select_tag(@operator_symbol, n)}
-        </div>
-      DOC
+      input_field = "input_#{n}_field"
+      select_tag = "input_#{n}_operator_symbol"
+      if n == 3
+        <<-DOC
+          <div class="input-group">
+            #{select_tag(@attribute, input_field, :title)}
+            <input value='' name="input_#{n}_text" type='text' class='form-control'>
+          </div>
+        DOC
+      else
+        <<-DOC
+          <div class="input-group">
+            #{select_tag(@attribute, input_field, :title)}
+            <input value='' name="input_#{n}_text" type='text' class='form-control'>
+            #{select_tag(@operator_symbol, select_tag)}
+          </div>
+        DOC
+      end
     end
 
     <<-DOC
@@ -194,7 +205,6 @@ class View
                 <div class="input-group">
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
-
 
                 #{input_group(1)}
                 #{input_group(2)}

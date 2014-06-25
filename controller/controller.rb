@@ -20,35 +20,53 @@ end
 
 class Query
   def initialize(params)
-    @keyword = params["keyword"]
     @limit = params["limit"]
     @offset = params["offset"]
     @nbc = params["nbc"]
 
     @input_1_text = params["input_1_text"]
     @input_1_field = params["input_1_field"]
-    if @input_1_field == ""
-      @input_1_field = "title"
-    end
+    @input_1_operator_symbol = params["input_1_operator_symbol"]
+
+    @input_2_text = params["input_2_text"]
+    @input_2_field = params["input_2_field"]
+    @input_2_operator_symbol = params["input_2_operator_symbol"]
+
+    @input_3_text = params["input_3_text"]
+    @input_3_field = params["input_3_field"]
+    @input_3_operator_symbol = params["input_3_operator_symbol"]
+
+    @input_1_field = "title" if @input_1_field == ""
+    @input_2_field = "title" if @input_2_field == ""
+    @input_3_field = "title" if @input_3_field == ""
+    @input_1_operator_symbol = "and" if @input_1_operator_symbol == "" && @input_1_text != ""
+    @input_2_operator_symbol = "and" if @input_2_operator_symbol == "" && @input_2_text != ""
+    @input_3_operator_symbol = "and" if @input_3_operator_symbol == "" && @input_3_text != ""
   end
 
   def select
-    @keyword =
+    where = ""
+    where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
+    where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
+    where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
+
     <<-SQL
       SELECT nbc, title, author, pub, date
       FROM book
-      WHERE #{@input_1_field}
-      LIKE '%#{@input_1_text}%'
+      WHERE #{where}
       LIMIT #{limit(@offset)}
     SQL
   end
 
   def count
+    where = ""
+    where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
+    where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
+    where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
     <<-SQL
       SELECT count(*)
       FROM book 
-      WHERE #{@input_1_field}
-      LIKE '%#{@input_1_text}%'
+      WHERE #{where}
     SQL
   end
 
