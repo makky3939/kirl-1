@@ -8,32 +8,33 @@ require './controller/controller.rb'
 require './view/view.rb'
 
 DB_FILE_PATH = 'model/library.db'
-
 cgi = CGI.new
 
 params = {
-  "nbc"            => CGI.escapeHTML(cgi["nbc"]),
-  "isbn"           => CGI.escapeHTML(cgi["isbn"]),
-  "author"         => CGI.escapeHTML(cgi["author"]),
-  "pub"            => CGI.escapeHTML(cgi["pub"]),
-  "date"           => CGI.escapeHTML(cgi["date"]),
-  "phys"           => CGI.escapeHTML(cgi["phys"]),
-  "note"           => CGI.escapeHTML(cgi["note"]),
-  "ed"             => CGI.escapeHTML(cgi["ed"]),
-  "series"         => CGI.escapeHTML(cgi["series"]),
-  "titleheading"   => CGI.escapeHTML(cgi["titleheading"]),
-  "authorheading"  => CGI.escapeHTML(cgi["authorheading"]),
-  "holdingsrecord" => CGI.escapeHTML(cgi["holdingsrecord"]),
-  "holdingloc"     => CGI.escapeHTML(cgi["holdingloc"]),
-  "holdingphys"    => CGI.escapeHTML(cgi["holdingphys"]),
+  'nbc'            => CGI.escapeHTML(cgi['nbc']),
+  'isbn'           => CGI.escapeHTML(cgi['isbn']),
+  'author'         => CGI.escapeHTML(cgi['author']),
+  'pub'            => CGI.escapeHTML(cgi['pub']),
+  'date'           => CGI.escapeHTML(cgi['date']),
+  'phys'           => CGI.escapeHTML(cgi['phys']),
+  'note'           => CGI.escapeHTML(cgi['note']),
+  'ed'             => CGI.escapeHTML(cgi['ed']),
+  'series'         => CGI.escapeHTML(cgi['series']),
+  'titleheading'   => CGI.escapeHTML(cgi['titleheading']),
+  'authorheading'  => CGI.escapeHTML(cgi['authorheading']),
+  'holdingsrecord' => CGI.escapeHTML(cgi['holdingsrecord']),
+  'holdingloc'     => CGI.escapeHTML(cgi['holdingloc']),
+  'holdingphys'    => CGI.escapeHTML(cgi['holdingphys']),
 
-  "keyword" => CGI.escapeHTML(cgi["keyword"]),
-  "limit"   => CGI.escapeHTML(cgi["limit"]),
-  "offset"  => CGI.escapeHTML(cgi["offset"])
+
+  'input_1_text'    => CGI.escapeHTML(cgi['input_1_text']),
+  'input_1_field'   => CGI.escapeHTML(cgi['input_1_field']),
+  'keyword' => CGI.escapeHTML(cgi['keyword']),
+  'limit'   => CGI.escapeHTML(cgi['limit']),
+  'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-
-if params["keyword"] != ""
+if params['input_1_text'] != ''
   query = Query.new(params)
   SQLite3::Database.new DB_FILE_PATH do |db|
     @count  = db.execute query.count
@@ -41,13 +42,12 @@ if params["keyword"] != ""
   end
   view = View.new('検索結果', 'result', params, @result, @count)
 else
-  result = "検索に失敗しました"
+  result = '検索に失敗しました'
   view = View.new('検索結果', 'result_error', params, result, 0)
 end
 
-# result = "検索に失敗しました"
-# view = View.new('検索結果', 'result_error', result, params)
-
-puts cgi.header({charset: "utf-8", type: "text/html"})
+puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
+
 puts params
+puts @result

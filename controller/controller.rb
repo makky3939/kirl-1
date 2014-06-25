@@ -24,15 +24,21 @@ class Query
     @limit = params["limit"]
     @offset = params["offset"]
     @nbc = params["nbc"]
+
+    @input_1_text = params["input_1_text"]
+    @input_1_field = params["input_1_field"]
+    if @input_1_field == ""
+      @input_1_field = "title"
+    end
   end
 
   def select
     @keyword =
     <<-SQL
       SELECT nbc, title, author, pub, date
-      FROM book 
-      WHERE title 
-      LIKE '%#{@keyword}%'
+      FROM book
+      WHERE #{@input_1_field}
+      LIKE '%#{@input_1_text}%'
       LIMIT #{limit(@offset)}
     SQL
   end
@@ -41,8 +47,8 @@ class Query
     <<-SQL
       SELECT count(*)
       FROM book 
-      WHERE title 
-      LIKE '%#{@keyword}%'
+      WHERE #{@input_1_field}
+      LIKE '%#{@input_1_text}%'
     SQL
   end
 

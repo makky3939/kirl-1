@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 class View
   def initialize(title='opac', type, params, data, count)
-    @attribute = {nbc: 'nbc', isbn: 'isbn', title: 'タイトル'}  
+    @attribute = {nbc: 'nbc', isbn: 'isbn', title: 'タイトル'}
+    @operator_symbol = {and: 'and', or: 'or', not: 'not'}
     @params = params
     @title = title_tag title
     @head = head
@@ -98,7 +99,7 @@ class View
   end
 
   def error(data)
-    ["<p>", "</p>"].join(data)
+    ["<p class='error'>", "</p>"].join(data)
   end
 
   def pagenation(count)
@@ -117,12 +118,12 @@ class View
     <<-DOC
       <form action="result.cgi" method="post" name="pagenation">
         <input type="hidden" name="offset">
-        <input type="hidden" name="keyword">
+        <input type="hidden" name="input_1_text">
       </form>
       <script type="text/javascript">
         function pagenation_post(offset){
-          pagenation.keyword.value = "#{@params["keyword"]}"
-          pagenation.offset.value = offset
+          pagenation.input_1_text.value = '#{@params["input_1_text"]}';
+          pagenation.offset.value = offset;
           pagenation.submit();
         }
       </script>
@@ -148,7 +149,8 @@ class View
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
                 <div class="input-group">
-                  <input value="" name="keyword" type='text' class='form-control'>
+                  <input value='title' name="input_1_field" type='text' class='form-control'>
+                  <input value='' name="input_1_text" type='text' class='form-control'>
                   <input type='submit' class='btn btn-default' value="search">
                 </div>
               </div>
@@ -173,6 +175,16 @@ class View
       ["<select name='#{name}'>", "</select>"].join option
     end
 
+    def input_group(n)
+      <<-DOC
+        <div class="input-group">
+          #{select_tag(@attribute, 'input_#{n}_field', :title)}
+          <input value='' name="input_#{n}_text" type='text' class='form-control'>
+          #{select_tag(@operator_symbol, n)}
+        </div>
+      DOC
+    end
+
     <<-DOC
       <div class="container">
         <div class="row">
@@ -182,10 +194,11 @@ class View
                 <div class="input-group">
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
-                <div class="input-group">
-                  #{select_tag(@attribute, 'input_1_field', :title)}
-                  <input value="" name="input_1_text" type='text' class='form-control'>
-                </div>
+
+
+                #{input_group(1)}
+                #{input_group(2)}
+                #{input_group(3)}
 
                 <div class="button-group">
                   <input type='submit' class='btn btn-default' value="search">
@@ -223,7 +236,7 @@ class View
               <form method="POST" action="result.cgi">
                 <div class='col-xs-6 pull-right head-searchform'>
                   <div class='input-group'>
-                    <input value="" name="keyword" type='text' class='form-control'>
+                    <input value="" name="input_1_text" type='text' class='form-control'>
                     <input type='submit' class='btn btn-default' value="search">
                   </div>
                 </div>
