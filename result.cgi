@@ -42,7 +42,7 @@ if params["keyword"] != ""
   view = View.new('検索結果', 'result', params, @result, @count)
 else
   result = "検索に失敗しました"
-  view = View.new('検索結果', 'result_error', params, result)
+  view = View.new('検索結果', 'result_error', params, result, 0)
 end
 
 # result = "検索に失敗しました"

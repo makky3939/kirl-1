@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 class View
   def initialize(title='opac', type, params, data, count)
+    @attribute = {nbc: 'nbc', isbn: 'isbn', title: 'タイトル'}  
     @params = params
     @title = title_tag title
     @head = head
@@ -14,11 +15,12 @@ class View
 
     when 'detail'
       _detail = detail(data[0])
-      @body = body(@page_header +_detail)
+      @body = body(@page_header + _detail)
 
     when 'index'
       _form = form()
-      @body = body(_form)
+      _detail_form = detail_form()
+      @body = body(@page_header + _detail_form)
 
     when "result_error", "detail_error"
       _error = error(data)
@@ -149,6 +151,51 @@ class View
                   <input value="" name="keyword" type='text' class='form-control'>
                   <input type='submit' class='btn btn-default' value="search">
                 </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    DOC
+  end
+
+  def detail_form()
+
+    def select_tag(attr={}, name='', selected_key=false)
+      option = ''
+      attr.each do |key, value|
+        if key == selected_key
+          option << ["<option value='#{key}' selected>", "</option>"].join(value)
+        else
+          option << ["<option value='#{key}'>", "</option>"].join(value)
+        end
+      end
+      ["<select name='#{name}'>", "</select>"].join option
+    end
+
+    <<-DOC
+      <div class="container">
+        <div class="row">
+          <form method="POST" action="result.cgi">
+            <div class="searchbox">
+              <div class="searchbox-simple">
+                <div class="input-group">
+                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+                </div>
+                <div class="input-group">
+                  #{select_tag(@attribute, 'input_1_field', :title)}
+                  <input value="" name="input_1_text" type='text' class='form-control'>
+                </div>
+
+                <div class="button-group">
+                  <input type='submit' class='btn btn-default' value="search">
+                  <input type='reset' class='btn btn-default' value="reset">
+                </div>
+
+                <div class="input-group">
+                  <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
+                </div>
+
               </div>
             </div>
           </form>

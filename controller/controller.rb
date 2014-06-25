@@ -27,6 +27,7 @@ class Query
   end
 
   def select
+    @keyword =
     <<-SQL
       SELECT nbc, title, author, pub, date
       FROM book 
