@@ -7,7 +7,6 @@ require 'sqlite3'
 require './controller/controller.rb'
 require './view/view.rb'
 
-DB_FILE_PATH = 'model/library.db'
 cgi = CGI.new
 
 params = {
@@ -41,7 +40,7 @@ params = {
   'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-view = View.new('index', 'index', params, '', 0)
+view = View.new('Index', 'index', params, '', 0)
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+
 class View
   def initialize(title='opac', type, params, data, count)
-    @attribute = {nbc: 'nbc', isbn: 'isbn', title: 'タイトル'}
-    @operator_symbol = {and: 'and', or: 'or', not: 'not'}
+    @attribute = {nbc: 'NBC', isbn: 'ISBN', title: 'タイトル', author: '著者名', pub: '出版社', date: '出版年'}
+    @operator_symbol = {and: 'AND', or: 'OR', not: 'NOT'}
     @params = params
     @title = title_tag title
     @head = head
@@ -110,12 +111,17 @@ class View
       rescue ArgumentError
         0
     end
-    page_sto = (integer_str? @params['offset']) * 20
+    offset = integer_str? @params['offset']
+    page_sto = offset * 20
     page_sta = page_sto - 20
     list = ""
     ((count/20)+1).times.each do |page|
       page = page + 1
-      list += "<li><a href='javascript: pagenation_post(#{page})'>#{page}</a></li>"
+      if page == offset
+        list += "<li><a href='javascript: pagenation_post(#{page} )' class='active'>#{page}</a></li>"
+      else
+        list += "<li><a href='javascript: pagenation_post(#{page})'>#{page}</a></li>"
+      end
     end
     <<-DOC
       <div class="container">
@@ -147,7 +153,7 @@ class View
             pagenation.submit();
           }
         </script>
-        <p>#{count}件 のうち #{page_sta}-#{page_sto}件 を表示しています。</p>
+        <p>#{count}件 のうち #{page_sta+1}-#{page_sto}件 を表示しています。</p>
         <div class='text-center'>
           <ul class='pagination'>
             <li class='disabled'><a href='#'>&laquo;</a></li>
@@ -211,15 +217,11 @@ class View
       else
         <<-DOC
           <div class="input-group">
-            
-              #{select_tag(@attribute, input_field, :title)}
-            
+            #{select_tag(@attribute, input_field, :title)}
             <div class="form-group">
               <input value='' name="input_#{n}_text" type='text' class='form-control'>
             </div>
-            
-              #{select_tag(@operator_symbol, select_tag)}
-            
+            #{select_tag(@operator_symbol, select_tag)}  
           </div>
         DOC
       end
@@ -237,15 +239,16 @@ class View
                 #{input_group(2)}
                 #{input_group(3)}
 
-                <div class="input-group-btn">
-                  <input type='submit' class='btn btn-default' value="search">
-                  <input type='reset' class='btn btn-default' value="reset">
+                <div class="input-group">
+                  <div class="form-group">
+                    <input type='submit' class='btn btn-blue' value="検索">
+                    <input type='reset' class='btn btn-default' value="フォームを初期化">
+                  </div>
                 </div>
 
                 <div class="input-group">
                   <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
                 </div>
-
           </form>
         </div>
       </div>
@@ -279,7 +282,7 @@ class View
                 <div class='input-group'>
                   <input value="" name="input_1_text" type='text' class='form-control'>
                   <span class="input-group-btn">
-                    <input type='submit' class='btn btn-default form-control' value="検索">
+                    <input type='submit' class='btn btn-blue form-control' value="検索">
                   </span>
                 </div>
               </form>

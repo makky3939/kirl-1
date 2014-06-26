@@ -102,9 +102,14 @@ a
   user-select: none
 
   &.btn-default
-    color: #333
+    color: $DarkGray
     background-color: #fff
     border-color: #ccc
+
+  &.btn-blue
+    color: $Blue
+    background-color: #ffffff
+    border-color: $Blue
 #footer
   width: 100%
   padding: 8px
@@ -205,6 +210,10 @@ a
       background-color: #fff
       border: 1px solid #ddd
       margin-left: -1px
+      &:hover,
+      &.active
+        background: $Blue
+        color: $White
 // .searchbox
 //   height: 384px
 //   margin: 0 auto
@@ -235,4 +244,8 @@ th
     padding: 8px
     line-height: 1.42857143
     vertical-align: top
-    border-top: 1px solid #ddd
+    border-bottom: 1px solid #ddd
+    border-left: 4px solid transparent
+
+  & > tbody > tr:hover > td:first-child
+    border-left: 4px solid $Blue
