@@ -185,6 +185,7 @@ class View
   def detail_form()
 
     def select_tag(attr={}, name='', selected_key=false)
+      select = ''
       option = ''
       attr.each do |key, value|
         if key == selected_key
@@ -193,7 +194,8 @@ class View
           option << ["<option value='#{key}'>", "</option>"].join(value)
         end
       end
-      ["<select name='#{name}'>", "</select>"].join option
+      select = ["<select name='#{name}' class='form-control'>", "</select>"].join option
+      ["<span class='input-group-addon'>", "</span>"].join select
     end
 
     def input_group(n)
@@ -209,9 +211,15 @@ class View
       else
         <<-DOC
           <div class="input-group">
-            #{select_tag(@attribute, input_field, :title)}
-            <input value='' name="input_#{n}_text" type='text' class='form-control'>
-            #{select_tag(@operator_symbol, select_tag)}
+            
+              #{select_tag(@attribute, input_field, :title)}
+            
+            <div class="form-group">
+              <input value='' name="input_#{n}_text" type='text' class='form-control'>
+            </div>
+            
+              #{select_tag(@operator_symbol, select_tag)}
+            
           </div>
         DOC
       end
@@ -220,9 +228,7 @@ class View
     <<-DOC
       <div class="container">
         <div class="row">
-          <form method="POST" action="result.cgi">
-            <div class="searchbox">
-              <div class="searchbox-simple">
+          <form method="POST" action="result.cgi" class="form-inline">
                 <div class="input-group">
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
@@ -231,7 +237,7 @@ class View
                 #{input_group(2)}
                 #{input_group(3)}
 
-                <div class="button-group">
+                <div class="input-group-btn">
                   <input type='submit' class='btn btn-default' value="search">
                   <input type='reset' class='btn btn-default' value="reset">
                 </div>
@@ -240,8 +246,6 @@ class View
                   <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
                 </div>
 
-              </div>
-            </div>
           </form>
         </div>
       </div>
@@ -266,17 +270,20 @@ class View
       <div id="header">
         <div class="container">
           <div class="col-xs-6">
-            <a href="index.cgi"><h1 class="title">opac</h1></a>
+            <a href="index.cgi" class="title"><h1>OPAC</h1></a>
           </div>
           <div class="col-xs-6">
-            <form method="POST" action="result.cgi"">
-              <div class='input-group'>
-                <input value="" name="input_1_text" type='text' class='form-control'>
-                <span class="input-group-btn">
-                  <input type='submit' class='btn btn-default' value="search">
-                </span>
-              </div>
-            </form>
+            <div class="col-xs-6"></div>
+            <div class="col-xs-6">
+              <form method="POST" action="result.cgi"">
+                <div class='input-group'>
+                  <input value="" name="input_1_text" type='text' class='form-control'>
+                  <span class="input-group-btn">
+                    <input type='submit' class='btn btn-default form-control' value="検索">
+                  </span>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
