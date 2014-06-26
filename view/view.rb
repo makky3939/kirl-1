@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 class View
   def initialize(title='opac', type, params, data, count)
+    @attribute = {nbc: 'nbc', isbn: 'isbn', title: 'タイトル'}
+    @operator_symbol = {and: 'and', or: 'or', not: 'not'}
     @params = params
     @title = title_tag title
     @head = head
@@ -14,11 +16,12 @@ class View
 
     when 'detail'
       _detail = detail(data[0])
-      @body = body(@page_header +_detail)
+      @body = body(@page_header + _detail)
 
     when 'index'
       _form = form()
-      @body = body(_form)
+      _detail_form = detail_form()
+      @body = body(@page_header + _detail_form)
 
     when "result_error", "detail_error"
       _error = error(data)
@@ -96,7 +99,7 @@ class View
   end
 
   def error(data)
-    ["<p>", "</p>"].join(data)
+    ["<p class='error'>", "</p>"].join(data)
   end
 
   def pagenation(count)
@@ -115,12 +118,29 @@ class View
     <<-DOC
       <form action="result.cgi" method="post" name="pagenation">
         <input type="hidden" name="offset">
-        <input type="hidden" name="keyword">
+        <input type="hidden" name="input_1_text">
+        <input type="hidden" name="input_1_field">
+        <input type="hidden" name="input_2_text">
+        <input type="hidden" name="input_2_field">
+        <input type="hidden" name="input_2_operator_symbol">
+        <input type="hidden" name="input_3_text">
+        <input type="hidden" name="input_3_field">
+        <input type="hidden" name="input_3_operator_symbol">
       </form>
       <script type="text/javascript">
         function pagenation_post(offset){
-          pagenation.keyword.value = "#{@params["keyword"]}"
-          pagenation.offset.value = offset
+          pagenation.input_1_text.value = '#{@params["input_1_text"]}';
+          pagenation.input_1_field.value = '#{@params["input_1_field"]}';
+
+          pagenation.input_2_text.value = '#{@params["input_2_text"]}';
+          pagenation.input_2_field.value = '#{@params["input_2_field"]}';
+          pagenation.input_2_operator_symbol.value = '#{@params["input_2_operator_symbol"]}';
+
+          pagenation.input_3_text.value = '#{@params["input_3_text"]}';
+          pagenation.input_3_field.value = '#{@params["input_3_field"]}';
+          pagenation.input_3_operator_symbol.value = '#{@params["input_3_operator_symbol"]}';
+
+          pagenation.offset.value = offset;
           pagenation.submit();
         }
       </script>
@@ -146,9 +166,76 @@ class View
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
                 <div class="input-group">
-                  <input value="" name="keyword" type='text' class='form-control'>
+                  <input value='title' name="input_1_field" type='text' class='form-control'>
+                  <input value='' name="input_1_text" type='text' class='form-control'>
                   <input type='submit' class='btn btn-default' value="search">
                 </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    DOC
+  end
+
+  def detail_form()
+
+    def select_tag(attr={}, name='', selected_key=false)
+      option = ''
+      attr.each do |key, value|
+        if key == selected_key
+          option << ["<option value='#{key}' selected>", "</option>"].join(value)
+        else
+          option << ["<option value='#{key}'>", "</option>"].join(value)
+        end
+      end
+      ["<select name='#{name}'>", "</select>"].join option
+    end
+
+    def input_group(n)
+      input_field = "input_#{n}_field"
+      select_tag = "input_#{n}_operator_symbol"
+      if n == 3
+        <<-DOC
+          <div class="input-group">
+            #{select_tag(@attribute, input_field, :title)}
+            <input value='' name="input_#{n}_text" type='text' class='form-control'>
+          </div>
+        DOC
+      else
+        <<-DOC
+          <div class="input-group">
+            #{select_tag(@attribute, input_field, :title)}
+            <input value='' name="input_#{n}_text" type='text' class='form-control'>
+            #{select_tag(@operator_symbol, select_tag)}
+          </div>
+        DOC
+      end
+    end
+
+    <<-DOC
+      <div class="container">
+        <div class="row">
+          <form method="POST" action="result.cgi">
+            <div class="searchbox">
+              <div class="searchbox-simple">
+                <div class="input-group">
+                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+                </div>
+
+                #{input_group(1)}
+                #{input_group(2)}
+                #{input_group(3)}
+
+                <div class="button-group">
+                  <input type='submit' class='btn btn-default' value="search">
+                  <input type='reset' class='btn btn-default' value="reset">
+                </div>
+
+                <div class="input-group">
+                  <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
+                </div>
+
               </div>
             </div>
           </form>
@@ -176,7 +263,7 @@ class View
               <form method="POST" action="result.cgi">
                 <div class='col-xs-6 pull-right head-searchform'>
                   <div class='input-group'>
-                    <input value="" name="keyword" type='text' class='form-control'>
+                    <input value="" name="input_1_text" type='text' class='form-control'>
                     <input type='submit' class='btn btn-default' value="search">
                   </div>
                 </div>
