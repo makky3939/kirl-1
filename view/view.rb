@@ -6,7 +6,7 @@ class View
     @params = params
     @title = title_tag title
     @head = head
-    @page_header = head_tag title
+    @page_header = ['<div class="container">', '</div>'].join(head_tag title)
 
     case type
     when 'result'
@@ -45,7 +45,7 @@ class View
   end
 
   def head_tag(text, size=1)
-    ['<h#{size}>', '</h#{size}>'].join text
+    ["<h#{size}>", "</h#{size}>"].join text
   end
 
   def asset
@@ -95,11 +95,13 @@ class View
     end
     tbody = ['<tbody>', '</tbody>'].join tr
 
-    ['<table>', '</table>'].join(thead + tbody)
+    table = ['<table class="table">', '</table>'].join(thead + tbody)
+    ['<div class="container">', '</div>'].join table
   end
 
   def error(data)
-    ["<p class='error'>", "</p>"].join(data)
+    error = ["<p class='error'>", "</p>"].join(data)
+    ['<div class="container">', '</div>'].join error
   end
 
   def pagenation(count)
@@ -116,41 +118,43 @@ class View
       list += "<li><a href='javascript: pagenation_post(#{page})'>#{page}</a></li>"
     end
     <<-DOC
-      <form action="result.cgi" method="post" name="pagenation">
-        <input type="hidden" name="offset">
-        <input type="hidden" name="input_1_text">
-        <input type="hidden" name="input_1_field">
-        <input type="hidden" name="input_2_text">
-        <input type="hidden" name="input_2_field">
-        <input type="hidden" name="input_2_operator_symbol">
-        <input type="hidden" name="input_3_text">
-        <input type="hidden" name="input_3_field">
-        <input type="hidden" name="input_3_operator_symbol">
-      </form>
-      <script type="text/javascript">
-        function pagenation_post(offset){
-          pagenation.input_1_text.value = '#{@params["input_1_text"]}';
-          pagenation.input_1_field.value = '#{@params["input_1_field"]}';
+      <div class="container">
+        <form action="result.cgi" method="post" name="pagenation">
+          <input type="hidden" name="offset">
+          <input type="hidden" name="input_1_text">
+          <input type="hidden" name="input_1_field">
+          <input type="hidden" name="input_2_text">
+          <input type="hidden" name="input_2_field">
+          <input type="hidden" name="input_2_operator_symbol">
+          <input type="hidden" name="input_3_text">
+          <input type="hidden" name="input_3_field">
+          <input type="hidden" name="input_3_operator_symbol">
+        </form>
+        <script type="text/javascript">
+          function pagenation_post(offset){
+            pagenation.input_1_text.value = '#{@params["input_1_text"]}';
+            pagenation.input_1_field.value = '#{@params["input_1_field"]}';
 
-          pagenation.input_2_text.value = '#{@params["input_2_text"]}';
-          pagenation.input_2_field.value = '#{@params["input_2_field"]}';
-          pagenation.input_2_operator_symbol.value = '#{@params["input_2_operator_symbol"]}';
+            pagenation.input_2_text.value = '#{@params["input_2_text"]}';
+            pagenation.input_2_field.value = '#{@params["input_2_field"]}';
+            pagenation.input_2_operator_symbol.value = '#{@params["input_2_operator_symbol"]}';
 
-          pagenation.input_3_text.value = '#{@params["input_3_text"]}';
-          pagenation.input_3_field.value = '#{@params["input_3_field"]}';
-          pagenation.input_3_operator_symbol.value = '#{@params["input_3_operator_symbol"]}';
+            pagenation.input_3_text.value = '#{@params["input_3_text"]}';
+            pagenation.input_3_field.value = '#{@params["input_3_field"]}';
+            pagenation.input_3_operator_symbol.value = '#{@params["input_3_operator_symbol"]}';
 
-          pagenation.offset.value = offset;
-          pagenation.submit();
-        }
-      </script>
-      <p>#{count}件 のうち #{page_sta}-#{page_sto}件 を表示しています。</p>
-      <div class='text-center'>
-        <ul class='pagination'>
-          <li class='disabled'><a href='#'>&laquo;</a></li>
-          #{list}
-          <li class='disabled'><a href='#'>&raquo;</a></li>
-        </ul>
+            pagenation.offset.value = offset;
+            pagenation.submit();
+          }
+        </script>
+        <p>#{count}件 のうち #{page_sta}-#{page_sto}件 を表示しています。</p>
+        <div class='text-center'>
+          <ul class='pagination'>
+            <li class='disabled'><a href='#'>&laquo;</a></li>
+            #{list}
+            <li class='disabled'><a href='#'>&raquo;</a></li>
+          </ul>
+        </div>
       </div>
     DOC
   end
@@ -256,21 +260,19 @@ class View
     <<-DOC
       <div id="header">
         <div class="container">
-          <div class="row">
-            <div class="col-xs-6 head-title"><a href="index.cgi">
-                <h1>opac</h1></a></div>
-            <div class="col-xs-6">
-              <form method="POST" action="result.cgi">
-                <div class='col-xs-6 pull-right head-searchform'>
-                  <div class='input-group'>
-                    <input value="" name="input_1_text" type='text' class='form-control'>
-                    <input type='submit' class='btn btn-default' value="search">
-                  </div>
-                </div>
-              </form>
-            </div>
+          <div class="col-xs-6">
+            <a href="index.cgi"><h1 class="title">opac</h1></a>
           </div>
-          <hr>
+          <div class="col-xs-6">
+            <form method="POST" action="result.cgi"">
+              <div class='input-group'>
+                <input value="" name="input_1_text" type='text' class='form-control'>
+                <span class="input-group-btn">
+                  <input type='submit' class='btn btn-default' value="search">
+                </span>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     DOC
@@ -278,10 +280,9 @@ class View
 
   def footer
     <<-DOC
-      <div id='footer'>
+      <div id="footer">
         <div class='container'>
-          <hr>
-          <p class='pull-right'>&copy 2014 Masaki Kobayashi</p>
+          <p>&copy 2014 Masaki Kobayashi</p>
         </div>
       </div>
     DOC
