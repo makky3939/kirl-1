@@ -119,10 +119,27 @@ class View
       <form action="result.cgi" method="post" name="pagenation">
         <input type="hidden" name="offset">
         <input type="hidden" name="input_1_text">
+        <input type="hidden" name="input_1_field">
+        <input type="hidden" name="input_2_text">
+        <input type="hidden" name="input_2_field">
+        <input type="hidden" name="input_2_operator_symbol">
+        <input type="hidden" name="input_3_text">
+        <input type="hidden" name="input_3_field">
+        <input type="hidden" name="input_3_operator_symbol">
       </form>
       <script type="text/javascript">
         function pagenation_post(offset){
           pagenation.input_1_text.value = '#{@params["input_1_text"]}';
+          pagenation.input_1_field.value = '#{@params["input_1_field"]}';
+
+          pagenation.input_2_text.value = '#{@params["input_2_text"]}';
+          pagenation.input_2_field.value = '#{@params["input_2_field"]}';
+          pagenation.input_2_operator_symbol.value = '#{@params["input_2_operator_symbol"]}';
+
+          pagenation.input_3_text.value = '#{@params["input_3_text"]}';
+          pagenation.input_3_field.value = '#{@params["input_3_field"]}';
+          pagenation.input_3_operator_symbol.value = '#{@params["input_3_operator_symbol"]}';
+
           pagenation.offset.value = offset;
           pagenation.submit();
         }
