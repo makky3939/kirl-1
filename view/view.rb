@@ -29,13 +29,13 @@ class View
       @body = body(@page_header + _detail)
 
     when 'index'
-      _form = form()
       _detail_form = detail_form()
       @body = body(@page_header + _detail_form)
 
     when "result_error", "detail_error"
+      _detail_form = detail_form()
       _error = error(data)
-      @body = body(@page_header + _error)
+      @body = body(@page_header + _error + _detail_form)
 
     else
       @body = body("ページがありません")

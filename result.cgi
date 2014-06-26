@@ -47,7 +47,12 @@ if params['input_1_text'] != ''
     @count  = db.execute query.count
     @result = db.execute query.select
   end
-  view = View.new('検索結果', 'result', params, @result, @count)
+  if @count[0][0] == 0
+    @result = '該当データが見つかりませんでした'
+    view = View.new('検索結果', 'result_error', params, @result, 0)
+  else
+    view = View.new('検索結果', 'result', params, @result, @count)
+  end
 else
   result = '検索に失敗しました'
   view = View.new('検索結果', 'result_error', params, result, 0)
