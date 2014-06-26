@@ -1,42 +1,87 @@
-$WHITE: #FFFFFF
+$White: #ffffff
+$Black: #3b4755
 
-$BEIGE: #F6F5EE
+$DarkBlue: #237dac
+$Blue: #3ba2c5
+$LightBlue: #afdefa
 
-$BLACK: #333333
+$DarkGray: #4f5f6f
+$Gray: #dddddd
+$LightGray: #f1f1f1
 
-$LIGHT_BLUE: #39BCE2
-$BLUE: #09A3CF
+// $LightPink: #e65977
+$WhitePink: #fcf2f5
+$Pink: #e65977
+// $DarkPink: #e65977
 
-$LIGHT_YELLOW: #FFD665
-$YELLOW: #FFC423
+// $LightYellow: #e6d337
+$WhiteYellow: #fcfcf2
+$Yellow: #efdb31
+// $DarkYellow: #e6d337
 
-$LIGHT_GREY: #959595
-$GREY: #676767
+$WhiteGreen: #f2fcf4
+$Green: #1ac174
+// $DarkGreen: #1ac174
+*
+  box-sizing: border-box
+  margin: 0
+  padding: 0
 
-$LIGHT_GREEN: #BBCF70
-$GREEN: #9DBA32
+.container:before, .container:after, .container-fluid:before, .container-fluid:after, .row:before, .row:after, .form-horizontal .form-group:before, .form-horizontal .form-group:after, .btn-toolbar:before, .btn-toolbar:after, .btn-group-vertical>.btn-group:before, .btn-group-vertical>.btn-group:after, .nav:before, .nav:after, .navbar:before, .navbar:after, .navbar-header:before, .navbar-header:after, .navbar-collapse:before, .navbar-collapse:after, .pager:before, .pager:after, .panel-body:before, .panel-body:after, .modal-footer:before, .modal-footer:after
+  content: " "
+  display: table
 
-$LIGHT_PURPLE: #D988B8
-$PURPLE: #C85599
+.clearfix:after, .container:after, .container-fluid:after, .row:after, .form-horizontal .form-group:after, .btn-toolbar:after, .btn-group-vertical>.btn-group:after, .nav:after, .navbar:after, .navbar-header:after, .navbar-collapse:after, .pager:after, .panel-body:after, .modal-footer:after
+  clear: both
 
-$LIGHT_ORANGE: #F19889
-$ORANGE: #EB6B56
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12
+  position: relative
+  min-height: 1px
 
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12
+  float: left
+
+.col-xs-6
+  width: 50%
 body
-  background: $WHITE
+  margin: 0
+  padding: 0
+  background: $White
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+  font-size: 14px
+  line-height: 1.42857143
+  color: #333333
+  background-color: $LightGray
+
+a
+  color: $Blue
+  &:hover
+    color: $DarkBlue
+
+.container
+  display: block
+  margin: 0 auto
+  width: 1024px
+
+.text-center
+  text-align: center
+
+.lead
+  line-height: 33px
+
 .book
   margin: 0 auto
   padding: 16px
   min-height: 512px
   max-width: 384px
-  border: 4px solid $GREY
+  border: 4px solid $Gray
   border-radius: 2px
 
 .book-head
   margin-top: 64px
 
 .book-head_title
-  border-bottom: 1px solid $BEIGE
+  border-bottom: 1px solid $Gray
 
 .book-head_ed
   padding: 0 4px
@@ -46,18 +91,166 @@ body
 
 .book-publish
   margin-top: 192px
+.btn
+  display: inline-block
+  margin-bottom: 0
+  font-weight: 400
+  text-align: center
+  vertical-align: middle
+  cursor: pointer
+  background-image: none
+  border: 1px solid transparent
+  white-space: nowrap
+  padding: 6px 12px
+  font-size: 14px
+  line-height: 1.42857143
+  border-radius: 4px
+  user-select: none
 
+  &.btn-default
+    color: $DarkGray
+    background-color: #fff
+    border-color: #ccc
 
-.head-title a
-  color: $GREY
+  &.btn-blue
+    color: $Blue
+    background-color: #ffffff
+    border-color: $Blue
+#footer
+  width: 100%
+  padding: 8px
+  margin-top: 16px
+  border-top: 4px solid $Gray
 
-#header .input-group
-  margin-top: 24px
+.input-group
+  position: relative
+  display: table
+  border-collapse: separate
 
-.head-searchform
-  padding: 0
-.searchbox
-  height: 384px
-  margin: 0 auto
-  max-width: 512px
-  min-width: 128px
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group>.btn, .input-group-btn:first-child>.dropdown-toggle, .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child>.btn-group:not(:last-child)>.btn
+  border-bottom-right-radius: 0
+  border-top-right-radius: 0
+
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn
+  border-bottom-left-radius: 0
+  border-top-left-radius: 0
+
+.input-group-addon, .input-group-btn, .input-group .form-control
+  display: table-cell
+
+.input-group .form-control
+  position: relative
+  z-index: 2
+  float: left
+  width: 100%
+  margin-bottom: 0
+
+.form-control
+  display: block
+  width: 100%
+  height: 33px
+  padding: 6px 12px
+  font-size: 14px
+  line-height: 1.42857143
+  color: #555
+  background-color: #fff
+  background-image: none
+  border: 1px solid #ccc
+  border-radius: 4px
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+
+.input-group-btn
+  position: relative
+  font-size: 0
+  white-space: nowrap
+
+.input-group-btn
+  width: 1%
+  white-space: nowrap
+  vertical-align: middle
+
+.input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group
+  margin-left: -1px
+
+.input-group
+  margin-bottom: 20px
+.form-control:focus
+  border-color: $Blue
+  outline: 0
+  + .input-group-addon
+    background: $Blue
+    border-color: $Blue
+    color: $LightGray
+
+#header
+  width: 100%
+  padding: 8px 0
+  margin-bottom: 16px
+  border-top: 2px solid $Blue
+  background: $Gray
+
+  a
+    text-decoration: none
+
+  .title
+    color: $DarkGray
+
+  .input-group
+    margin-bottom: 0
+.pagination
+  display: inline-block
+  padding-left: 0
+  border-radius: 4px
+  & > li
+    display: inline
+    & > a,
+    & > span
+      position: relative
+      float: left
+      padding: 6px 12px
+      line-height: 1.42857143
+      text-decoration: none
+      color: $Blue
+      background-color: #fff
+      border: 1px solid #ddd
+      margin-left: -1px
+      &:hover,
+      &.active
+        background: $Blue
+        color: $White
+// .searchbox
+//   height: 384px
+//   margin: 0 auto
+//   max-width: 512px
+//   min-width: 128px
+
+table
+  border-collapse: collapse
+  border-spacing: 0
+  max-width: 100%
+  margin: 8px 0
+  background-color: transparent
+
+th
+  text-align: left
+
+.table
+  width: 100%
+  margin-bottom: 20px
+
+  & > thead > tr > th
+    vertical-align: bottom
+    border-bottom: 2px solid #ddd
+
+  & > thead > tr > th,
+  & > tbody > tr > th,
+  & > tbody > tr > td
+    padding: 8px
+    line-height: 1.42857143
+    vertical-align: top
+    border-bottom: 1px solid #ddd
+    border-left: 4px solid transparent
+
+  & > tbody > tr:hover > td:first-child
+    border-left: 4px solid $Blue

@@ -30,9 +30,9 @@ gulp.task "sass", ->
   gulp.src "src/sass/tmp/*.sass"
     .pipe plumber()
     .pipe sass()
-    .pipe prefixer 'last 2 version'
+    .pipe prefixer 'last 3 version'
     .pipe mincss()
-    .pipe gulp.dest "dst/css/"
+    .pipe gulp.dest "../css/"
 
 gulp.task "bower", ->
   bower({ directory: "bower_components"})
@@ -58,4 +58,5 @@ gulp.task "watch", ->
 
 ## Tasks
 # Default task
-gulp.task "default", ["clean", "concat", "sass", "coffee", "jade", "bower", "connect", "watch"]
+# gulp.task "default", ["clean", "concat", "sass", "coffee", "jade", "bower", "connect", "watch"]
+gulp.task "default", ["clean", "concat", "sass", "watch"]
