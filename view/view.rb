@@ -11,9 +11,16 @@ class View
 
     case type
     when 'result'
+      @offset = integer_str? @params['offset']
+      @page_sto = @offset * 20
+      @page_sta = @page_sto - 20
+      @page_sta = 1 if @page_sta <= 0
+      @page_last = ((count[0][0]/20)+1)
+
       _table = table(data)
       _pagenation = pagenation(count[0][0])
-      @body = body(@page_header + _table + _pagenation)
+      _result_info = result_info(count[0][0])
+      @body = body(@page_header + _result_info + _table + _pagenation)
 
     when 'detail'
       _detail = detail(data[0])
@@ -105,20 +112,36 @@ class View
     ['<div class="container">', '</div>'].join error
   end
 
-  def pagenation(count)
-    def integer_str?(str)
-      Integer(str)
-      rescue ArgumentError
-        0
+  def result_info(count)
+    <<-DOC
+      <div class="container"
+        <div class="col-xs-6">
+          <p class="lead">#{count}件 のうち #{@page_sta}-#{@page_sto}件 を表示しています。</p>
+        </div>
+      </div>
+    DOC
+  end
+
+  def integer_str?(str)
+    begin
+      int = Integer(str)
+    rescue ArgumentError
+      int = nil
     end
+    return int
+  end
+
+  def pagenation(count)
     offset = integer_str? @params['offset']
     page_sto = offset * 20
-    page_sta = page_sto - 20
+    page_sta = page_sto - 19
+    page_sta = 1 if page_sta < 0
     list = ""
+    page_last = ((count/20)+1)
     ((count/20)+1).times.each do |page|
       page = page + 1
       if page == offset
-        list += "<li><a href='javascript: pagenation_post(#{page} )' class='active'>#{page}</a></li>"
+        list += "<li><a href='javascript: pagenation_post(#{page})' class='active'>#{page}</a></li>"
       else
         list += "<li><a href='javascript: pagenation_post(#{page})'>#{page}</a></li>"
       end
@@ -153,13 +176,17 @@ class View
             pagenation.submit();
           }
         </script>
-        <p>#{count}件 のうち #{page_sta+1}-#{page_sto}件 を表示しています。</p>
-        <div class='text-center'>
-          <ul class='pagination'>
-            <li class='disabled'><a href='#'>&laquo;</a></li>
-            #{list}
-            <li class='disabled'><a href='#'>&raquo;</a></li>
-          </ul>
+        <div class="col-xs-6">
+          <p class="lead">#{count}件 のうち #{page_sta}-#{page_sto}件 を表示しています。</p>
+        </div>
+        <div class="col-xs-6">
+          <div class='text-center'>
+            <ul class='pagination'>
+              <li class='page_first'><a href='javascript: pagenation_post(#{page_sta})'>&laquo;</a></li>
+                #{list}
+              <li class='page_last'><a href='javascript: pagenation_post(#{page_last})'>&raquo;</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     DOC
@@ -278,7 +305,7 @@ class View
           <div class="col-xs-6">
             <div class="col-xs-6"></div>
             <div class="col-xs-6">
-              <form method="POST" action="result.cgi"">
+              <form method="POST" action="result.cgi">
                 <div class='input-group'>
                   <input value="" name="input_1_text" type='text' class='form-control'>
                   <span class="input-group-btn">
