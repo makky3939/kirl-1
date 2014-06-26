@@ -1,26 +1,27 @@
-$WHITE: #FFFFFF
+$White: #ffffff
+$Black: #3b4755
 
-$BEIGE: #F6F5EE
+$DarkBlue: #237dac
+$Blue: #3ba2c5
+$LigheBlue: #afdefa
 
-$BLACK: #333333
+$DarkGray: #4f5f6f
+$Gray: #dddddd
+$LightGray: #f1f1f1
 
-$LIGHT_BLUE: #39BCE2
-$BLUE: #09A3CF
+// $LightPink: #e65977
+$WhitePink: #fcf2f5
+$Pink: #e65977
+// $DarkPink: #e65977
 
-$LIGHT_YELLOW: #FFD665
-$YELLOW: #FFC423
+// $LightYellow: #e6d337
+$WhiteYellow: #fcfcf2
+$Yellow: #efdb31
+// $DarkYellow: #e6d337
 
-$LIGHT_GREY: #959595
-$GREY: #676767
-
-$LIGHT_GREEN: #BBCF70
-$GREEN: #9DBA32
-
-$LIGHT_PURPLE: #D988B8
-$PURPLE: #C85599
-
-$LIGHT_ORANGE: #F19889
-$ORANGE: #EB6B56
+$WhiteGreen: #f2fcf4
+$Green: #1ac174
+// $DarkGreen: #1ac174
 *
   box-sizing: border-box
   margin: 0
@@ -45,7 +46,7 @@ $ORANGE: #EB6B56
 body
   margin: 0
   padding: 0
-  background: $WHITE
+  background: $White
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
   font-size: 14px
   line-height: 1.42857143
@@ -53,9 +54,9 @@ body
   background-color: #fff
 
 a
-  color: $BLUE
+  color: $Blue
   &:hover
-    color: $GREY
+    color: $DarkBlue
 
 .container
   display: block
@@ -67,14 +68,14 @@ a
   padding: 16px
   min-height: 512px
   max-width: 384px
-  border: 4px solid $GREY
+  border: 4px solid $Gray
   border-radius: 2px
 
 .book-head
   margin-top: 64px
 
 .book-head_title
-  border-bottom: 1px solid $BEIGE
+  border-bottom: 1px solid $Gray
 
 .book-head_ed
   padding: 0 4px
@@ -108,7 +109,7 @@ a
   width: 100%
   padding: 8px
   margin-top: 16px
-  border-top: 1px solid $BLUE
+  border-top: 1px solid $Blue
 
 .input-group
   position: relative
@@ -161,7 +162,7 @@ a
   width: 100%
   padding: 8px 0
   margin-bottom: 16px
-  border-bottom: 1px solid $BLUE
+  border-bottom: 1px solid $Blue
 
   a
     text-decoration: none
@@ -180,7 +181,7 @@ a
       padding: 6px 12px
       line-height: 1.42857143
       text-decoration: none
-      color: #428bca
+      color: $Blue
       background-color: #fff
       border: 1px solid #ddd
       margin-left: -1px

@@ -253,7 +253,12 @@ class View
     data.each do |value|
       li += ["<li>", "</li>"].join value
     end
-    ["<ul>", "</ul>"].join li
+    ul = ["<ul>", "</ul>"].join li
+    <<-DOC
+      <div class="container">
+        #{ul}
+      </div>
+    DOC
   end
 
   def header
