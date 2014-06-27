@@ -1,8 +1,32 @@
 # -*- coding: utf-8 -*-
 
 class View
-  def initialize(title='opac', type, params, data, count)
-    @attribute = {nbc: 'NBC', isbn: 'ISBN', title: 'タイトル', author: '著者名', pub: '出版社', date: '出版年'}
+  def initialize(title='OPAC', type='result_error', params={}, data=[], count=[[0]])
+    @attribute = {
+      nbc: '全国書誌番号',
+      isbn: 'ISBN番号',
+      title: '書名',
+      author: '著者',
+      pub: '出版者',
+      date: '出版年',
+      phys: '形態',
+      note: '注記',
+      ed: '版',
+      series: 'シリーズ',
+      titleheading: 'タイトルの読み',
+      authorheading: '著者の読み',
+      holdingsrecord: '所在情報の識別番号',
+      holdingloc: '所在情報',
+      holdingphys: '所在注記',
+      any: '全項目'
+    }
+
+    @range ={
+      '20' => '20件',
+      '40' => '40件',
+      '60' => '60件'
+    }
+
     @operator_symbol = {and: 'AND', or: 'OR', not: 'NOT'}
     @params = params
     @title = title_tag title
@@ -14,10 +38,12 @@ class View
       @count = count[0][0]
       @offset = integer_str?(@params['offset'])
       @offset = 1 if @offset == 0
-      @page_sto = @offset * 20
-      @page_sta = @page_sto - 20
+      @range = integer_str?(@params['range'])
+      @range = 20 if @range == 0
+      @page_sto = @offset * @range
+      @page_sta = @page_sto - @range
       @page_sta = 1 if @page_sta <= 0
-      @page_last = ((@count/20)+1)
+      @page_last = ((@count/@range)+1)
 
       _table = table(data)
       _pagenation = pagenation()
@@ -96,12 +122,12 @@ class View
     tr = ''
     data.each do |row|
       td = ''
-      td += ['<td>', '</td>'].join row[0]
-      td += ['<td>', '</td>'].join "<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>"
-      td += ['<td>', '</td>'].join row[2]
-      td += ['<td>', '</td>'].join row[3]
-      td += ['<td>', '</td>'].join row[4]
-      tr += ['<tr>', '</tr>'].join td
+      td << ['<td>', '</td>'].join(row[0])
+      td << ['<td>', '</td>'].join("<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
+      td << ['<td>', '</td>'].join(row[2])
+      td << ['<td>', '</td>'].join(row[3])
+      td << ['<td>', '</td>'].join(row[4])
+      tr << ['<tr>', '</tr>'].join(td)
     end
     tbody = ['<tbody>', '</tbody>'].join tr
 
@@ -124,7 +150,7 @@ class View
 
   def pagenation
     list = ""
-    ((@count/20)+1).times.each do |page|
+    ((@count/@range)+1).times.each do |page|
       page = page + 1
       if page == @offset
         list << "<li><a href='javascript: pagenation_post(#{page})' class='active'>#{page}</a></li>"
@@ -217,17 +243,18 @@ class View
     def input_group(n)
       input_field = "input_#{n}_field"
       select_tag = "input_#{n}_operator_symbol"
+      selected_key = [:title, :author, :pub]
       if n == 3
         <<-DOC
           <div class="input-group">
-            #{select_tag(@attribute, input_field, :title)}
+            #{select_tag(@attribute, input_field, selected_key[n-1])}
             <input value='' name="input_#{n}_text" type='text' class='form-control'>
           </div>
         DOC
       else
         <<-DOC
           <div class="input-group">
-            #{select_tag(@attribute, input_field, :title)}
+            #{select_tag(@attribute, input_field, selected_key[n-1])}
             <div class="form-group">
               <input value='' name="input_#{n}_text" type='text' class='form-control'>
             </div>
@@ -255,10 +282,7 @@ class View
                     <input type='reset' class='btn btn-default' value="フォームを初期化">
                   </div>
                 </div>
-
-                <div class="input-group">
-                  <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
-                </div>
+                <p>1ページあたりの表示件数 #{select_tag(@range, 'range', '20')}</p>
           </form>
         </div>
       </div>
@@ -266,14 +290,72 @@ class View
   end
 
   def detail(data)
-    li = ""
-    data.each do |value|
-      li += ["<li>", "</li>"].join value
+    def detail_info(info, head)
+      head = ["<h3>", "</h3>"].join head
+      li = ""
+      if info.nil?
+        li += ["<li>", "</li>"].join("データなし")
+      else
+        li += ["<li>", "</li>"].join(info)
+      end
+      ul = ["<ul>", "</ul>"].join li
+      head << ul
     end
-    ul = ["<ul>", "</ul>"].join li
     <<-DOC
       <div class="container">
-        #{ul}
+        <div class="col-xs-6">
+          <div class="book">
+            <p>#{data[0]} #{data[1]}</p>
+            <div class="book-head">
+              <h1 class="book-head_title">#{data[2]}</h1>
+              <p class="book-author">#{data[3]}</p>
+            </div>
+
+            <div class="book-publish">
+              <p>#{data[4]} #{data[5]}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+          <dic class="book-info">
+            #{detail_info(data[6], "形態")}
+            #{detail_info(data[7], "注記")}
+            #{detail_info(data[8], "版表示")}
+            #{detail_info(data[9], "シリーズ名")}
+            #{detail_info(data[10], "タイトルの読み")}
+            #{detail_info(data[11], "著者の読み")}
+            #{detail_info(data[12], "所在情報の識別番号")}
+            #{detail_info(data[13], "所在情報")}
+            #{detail_info(data[14], "所在情報の注記")}
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="col-xs-12 book-link">
+          <a class="btn btn-blue" href="javascript: booklink_post('author')">同じ著者の図書を検索する</a>
+          <a class="btn btn-blue" href="javascript: booklink_post('series')">同じシリーズの図書を検索する</a>
+          <a class="btn btn-blue" href="javascript: booklink_post('pub')">同じ出版者の図書を検索する</a>
+        </div>
+        <form action="result.cgi" method="post" name="book_link">
+          <input type="hidden" name="input_1_text">
+          <input type="hidden" name="input_1_field">
+        </form>
+        <script type="text/javascript">
+          function booklink_post(type){
+            if(type == "author"){
+              book_link.input_1_text.value = '#{data[3]}';
+              book_link.input_1_field.value = 'author';
+            }else if(type == "series"){
+              book_link.input_1_text.value = '#{data[9]}';
+              book_link.input_1_field.value = 'series';
+            }else if(type == "pub"){
+              book_link.input_1_text.value = '#{data[4]}';
+              book_link.input_1_field.value = 'pub';
+            }
+            book_link.submit();
+          }
+        </script>
       </div>
     DOC
   end
@@ -307,7 +389,15 @@ class View
     <<-DOC
       <div id="footer">
         <div class='container'>
-          <p>&copy 2014 Masaki Kobayashi</p>
+          <div class="col-xs-6">
+            <p>&copy 2014 Masaki Kobayashi</p>
+          </div>
+          <div class="col-xs-6 links">
+            <p class="text-right">
+              <a href="index.cgi">検索画面に戻る</a>
+              <a href="#header">Topに戻る</a>
+            </p>
+          </div>
         </div>
       </div>
     DOC
