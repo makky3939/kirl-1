@@ -13,6 +13,11 @@ def limit(offset=1, limit_size = 20)
   else
     offset = 1
   end
+  if integer_str? limit_size
+    limit_size = limit_size.to_i
+  else
+    limit_size = 20
+  end
   limit = limit_size
   offset = (limit_size * (offset - 1))
   "#{offset}, #{limit}"
@@ -22,6 +27,7 @@ class Query
   def initialize(params)
     @limit = params["limit"]
     @offset = params["offset"]
+    @range = params["range"]
     @nbc = params["nbc"]
 
     @input_1_text = params["input_1_text"]
@@ -51,10 +57,20 @@ class Query
     where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
 
     <<-SQL
-      SELECT nbc, title, author, pub, date
+      SELECT book.nbc, book.title, book.author, book.pub, book.date
       FROM book
+      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
+      LEFT OUTER JOIN note on book.nbc = note.nbc
+      LEFT OUTER JOIN ed on book.nbc = ed.nbc
+      LEFT OUTER JOIN series on book.nbc = series.nbc
+      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
+      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
+      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
+      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
+      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+
       WHERE #{where}
-      LIMIT #{limit(@offset)}
+      LIMIT #{limit(@offset, @range)}
     SQL
   end
 
@@ -66,6 +82,16 @@ class Query
     <<-SQL
       SELECT count(*)
       FROM book 
+      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
+      LEFT OUTER JOIN note on book.nbc = note.nbc
+      LEFT OUTER JOIN ed on book.nbc = ed.nbc
+      LEFT OUTER JOIN series on book.nbc = series.nbc
+      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
+      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
+      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
+      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
+      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+
       WHERE #{where}
     SQL
   end

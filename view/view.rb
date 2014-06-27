@@ -2,7 +2,30 @@
 
 class View
   def initialize(title='opac', type, params, data, count)
-    @attribute = {nbc: 'NBC', isbn: 'ISBN', title: 'タイトル', author: '著者名', pub: '出版社', date: '出版年'}
+    @attribute = {
+      nbc: '全国書誌番号',
+      isbn: 'ISBN番号',
+      title: '書名',
+      author: '著者',
+      pub: '出版者',
+      date: '出版年',
+      phys: '形態',
+      note: '注記',
+      ed: '版',
+      series: 'シリーズ',
+      titleheading: 'タイトルの読み',
+      authorheading: '著者の読み',
+      holdingsrecord: '所在情報の識別番号',
+      holdingloc: '所在情報',
+      holdingphys: '所在注記'
+    }
+
+    @range ={
+      '20' => '20件',
+      '40' => '40件',
+      '60' => '60件'
+    }
+
     @operator_symbol = {and: 'AND', or: 'OR', not: 'NOT'}
     @params = params
     @title = title_tag title
@@ -14,10 +37,12 @@ class View
       @count = count[0][0]
       @offset = integer_str?(@params['offset'])
       @offset = 1 if @offset == 0
-      @page_sto = @offset * 20
-      @page_sta = @page_sto - 20
+      @range = integer_str?(@params['range'])
+      @range = 20 if @range == 0
+      @page_sto = @offset * @range
+      @page_sta = @page_sto - @range
       @page_sta = 1 if @page_sta <= 0
-      @page_last = ((@count/20)+1)
+      @page_last = ((@count/@range)+1)
 
       _table = table(data)
       _pagenation = pagenation()
@@ -96,12 +121,12 @@ class View
     tr = ''
     data.each do |row|
       td = ''
-      td += ['<td>', '</td>'].join row[0]
-      td += ['<td>', '</td>'].join "<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>"
-      td += ['<td>', '</td>'].join row[2]
-      td += ['<td>', '</td>'].join row[3]
-      td += ['<td>', '</td>'].join row[4]
-      tr += ['<tr>', '</tr>'].join td
+      td << ['<td>', '</td>'].join(row[0])
+      td << ['<td>', '</td>'].join("<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
+      td << ['<td>', '</td>'].join(row[2])
+      td << ['<td>', '</td>'].join(row[3])
+      td << ['<td>', '</td>'].join(row[4])
+      tr << ['<tr>', '</tr>'].join(td)
     end
     tbody = ['<tbody>', '</tbody>'].join tr
 
@@ -124,7 +149,7 @@ class View
 
   def pagenation
     list = ""
-    ((@count/20)+1).times.each do |page|
+    ((@count/@range)+1).times.each do |page|
       page = page + 1
       if page == @offset
         list << "<li><a href='javascript: pagenation_post(#{page})' class='active'>#{page}</a></li>"
@@ -217,17 +242,18 @@ class View
     def input_group(n)
       input_field = "input_#{n}_field"
       select_tag = "input_#{n}_operator_symbol"
+      selected_key = [:title, :author, :pub]
       if n == 3
         <<-DOC
           <div class="input-group">
-            #{select_tag(@attribute, input_field, :title)}
+            #{select_tag(@attribute, input_field, selected_key[n-1])}
             <input value='' name="input_#{n}_text" type='text' class='form-control'>
           </div>
         DOC
       else
         <<-DOC
           <div class="input-group">
-            #{select_tag(@attribute, input_field, :title)}
+            #{select_tag(@attribute, input_field, selected_key[n-1])}
             <div class="form-group">
               <input value='' name="input_#{n}_text" type='text' class='form-control'>
             </div>
@@ -255,10 +281,7 @@ class View
                     <input type='reset' class='btn btn-default' value="フォームを初期化">
                   </div>
                 </div>
-
-                <div class="input-group">
-                  <input type="checkbox" id="check_nbc"><label for="check_nbc"> NBC </label>
-                </div>
+                <p>1ページあたりの表示件数 #{select_tag(@range, 'range', '20')}</p>
           </form>
         </div>
       </div>
