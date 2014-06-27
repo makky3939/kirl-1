@@ -43,3 +43,4 @@ puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 
 puts params
+puts @result.map{|e|e.size}

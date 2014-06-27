@@ -98,7 +98,7 @@ class Query
 
   def select_detail
     <<-SQL
-      SELECT *
+      SELECT book.nbc, isbn.isbn, book.title, book.author, book.pub, book.date, book.phys, note.note, ed.ed, series.series, titleheading.titleheading, authorheading.authorheading, holdingsrecord.holdingsrecord, holdingloc.holdingloc, holdingphys.holdingphys
       FROM book
       LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
       LEFT OUTER JOIN note on book.nbc = note.nbc
@@ -111,6 +111,7 @@ class Query
       LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
 
       WHERE book.nbc = '#{@nbc}'
+      LIMIT 1
     SQL
   end
 end

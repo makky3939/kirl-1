@@ -289,14 +289,46 @@ class View
   end
 
   def detail(data)
-    li = ""
-    data.each do |value|
-      li += ["<li>", "</li>"].join value
+    def detail_info(info, head)
+      head = ["<h3>", "</h3>"].join head
+      li = ""
+      if info.nil?
+        li += ["<li>", "</li>"].join("データなし")
+      else
+        li += ["<li>", "</li>"].join(info)
+      end
+      ul = ["<ul>", "</ul>"].join li
+      head << ul
     end
-    ul = ["<ul>", "</ul>"].join li
     <<-DOC
       <div class="container">
-        #{ul}
+        <div class="col-xs-6">
+          <div class="book">
+            <p>#{data[0]} #{data[1]}</p>
+            <div class="book-head">
+              <h1 class="book-head_title">#{data[2]}</h1>
+              <p class="book-author">#{data[3]}</p>
+            </div>
+
+            <div class="book-publish">
+              <p>#{data[4]} #{data[5]}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+          <dic class="book-info">
+            #{detail_info(data[6], "形態")}
+            #{detail_info(data[7], "注記")}
+            #{detail_info(data[8], "版表示")}
+            #{detail_info(data[9], "シリーズ名")}
+            #{detail_info(data[10], "タイトルの読み")}
+            #{detail_info(data[11], "著者の読み")}
+            #{detail_info(data[12], "所在情報の識別番号")}
+            #{detail_info(data[13], "所在情報")}
+            #{detail_info(data[14], "所在情報の注記")}
+          </div>
+        </div>
       </div>
     DOC
   end
