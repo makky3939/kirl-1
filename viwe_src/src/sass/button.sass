@@ -13,13 +13,24 @@
   line-height: 1.42857143
   border-radius: 4px
   user-select: none
+  text-decoration: none
+  &:focus
+    outline: 0
 
   &.btn-default
     color: $DarkGray
     background-color: #fff
     border-color: #ccc
+    &:hover,
+    &:focus
+      border-color: $Blue
+      color: $Blue
 
   &.btn-blue
-    color: $Blue
-    background-color: #ffffff
+    background: $Blue
+    color: $White
     border-color: $Blue
+    &:hover,
+    &:focus
+      color: $Blue
+      background-color: $White

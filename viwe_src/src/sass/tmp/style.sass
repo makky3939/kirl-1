@@ -43,6 +43,9 @@ $Green: #1ac174
 
 .col-xs-6
   width: 50%
+
+.col-xs-12
+  width: 100%
 body
   margin: 0
   padding: 0
@@ -66,31 +69,47 @@ a
 .text-center
   text-align: center
 
+.text-right
+  text-align: right
+
 .lead
   line-height: 33px
 
 .book
-  margin: 0 auto
+  margin: 16px auto
   padding: 16px
   min-height: 512px
   max-width: 384px
-  border: 4px solid $Gray
-  border-radius: 2px
+  border: 4px solid $DarkGray
+  border-left-color: $Blue
+  border-radius: 6px
 
 .book-head
   margin-top: 64px
 
 .book-head_title
-  border-bottom: 1px solid $Gray
+  border-bottom: 1px solid $DarkGray
 
 .book-head_ed
   padding: 0 4px
 
 .book-author
+  padding: 8px 0
   text-align: right
 
 .book-publish
   margin-top: 192px
+
+.book-info
+  margin: 16px
+  padding: 24px 16px
+  ul
+    margin-bottom: 8px
+
+.book-link
+  border-top: 2px solid $Blue
+  padding: 16px 0
+  margin: 16px 0
 .btn
   display: inline-block
   margin-bottom: 0
@@ -106,34 +125,56 @@ a
   line-height: 1.42857143
   border-radius: 4px
   user-select: none
+  text-decoration: none
+  &:focus
+    outline: 0
 
   &.btn-default
     color: $DarkGray
     background-color: #fff
     border-color: #ccc
+    &:hover,
+    &:focus
+      border-color: $Blue
+      color: $Blue
 
   &.btn-blue
-    color: $Blue
-    background-color: #ffffff
+    background: $Blue
+    color: $White
     border-color: $Blue
+    &:hover,
+    &:focus
+      color: $Blue
+      background-color: $White
+.error
+  line-height: 3em
+  border-left: 4px solid $Pink
+  background: $WhitePink
+  padding: 8px
+  margin: 16px 0
+  color: $Pink
 #footer
   width: 100%
-  padding: 8px
+  padding: 16px
   margin-top: 16px
   border-top: 4px solid $Gray
+
+  .links
+    a
+      padding: 0 4px
 
 .input-group
   position: relative
   display: table
   border-collapse: separate
 
-.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group>.btn, .input-group-btn:first-child>.dropdown-toggle, .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child>.btn-group:not(:last-child)>.btn
-  border-bottom-right-radius: 0
-  border-top-right-radius: 0
-
 .input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn
   border-bottom-left-radius: 0
   border-top-left-radius: 0
+
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child>.btn, .input-group-btn:first-child>.btn-group>.btn, .input-group-btn:first-child>.dropdown-toggle, .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child>.btn-group:not(:last-child)>.btn
+  border-bottom-right-radius: 0
+  border-top-right-radius: 0
 
 .input-group-addon, .input-group-btn, .input-group .form-control
   display: table-cell
@@ -157,7 +198,6 @@ a
   background-image: none
   border: 1px solid #ccc
   border-radius: 4px
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075)
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
 
 .input-group-btn
@@ -175,6 +215,7 @@ a
 
 .input-group
   margin-bottom: 20px
+
 .form-control:focus
   border-color: $Blue
   outline: 0
@@ -190,11 +231,18 @@ a
   border-top: 2px solid $Blue
   background: $Gray
 
+  h1
+    display: inline-block
+    padding: 0 8px
+
   a
     text-decoration: none
 
   .title
     color: $DarkGray
+    &:hover,
+    &:focus
+      color: $DarkBlue
 
   .input-group
     margin-bottom: 0
@@ -234,6 +282,7 @@ table
 
 th
   text-align: left
+  color: $DarkGray
 
 .table
   width: 100%
