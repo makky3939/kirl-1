@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 class View
-  def initialize(title='opac', type, params, data, count)
+  def initialize(title='OPAC', type='result_error', params={}, data=[], count=[[0]])
     @attribute = {
       nbc: '全国書誌番号',
       isbn: 'ISBN番号',
@@ -17,7 +17,8 @@ class View
       authorheading: '著者の読み',
       holdingsrecord: '所在情報の識別番号',
       holdingloc: '所在情報',
-      holdingphys: '所在注記'
+      holdingphys: '所在注記',
+      any: '全項目'
     }
 
     @range ={
@@ -330,6 +331,32 @@ class View
           </div>
         </div>
       </div>
+      <div class="container">
+        <div class="col-xs-12 book-link">
+          <a class="btn btn-blue" href="javascript: booklink_post('author')">同じ著者の図書を検索する</a>
+          <a class="btn btn-blue" href="javascript: booklink_post('series')">同じシリーズの図書を検索する</a>
+          <a class="btn btn-blue" href="javascript: booklink_post('pub')">同じ出版者の図書を検索する</a>
+        </div>
+        <form action="result.cgi" method="post" name="book_link">
+          <input type="hidden" name="input_1_text">
+          <input type="hidden" name="input_1_field">
+        </form>
+        <script type="text/javascript">
+          function booklink_post(type){
+            if(type == "author"){
+              book_link.input_1_text.value = '#{data[3]}';
+              book_link.input_1_field.value = 'author';
+            }else if(type == "series"){
+              book_link.input_1_text.value = '#{data[9]}';
+              book_link.input_1_field.value = 'series';
+            }else if(type == "pub"){
+              book_link.input_1_text.value = '#{data[4]}';
+              book_link.input_1_field.value = 'pub';
+            }
+            book_link.submit();
+          }
+        </script>
+      </div>
     DOC
   end
 
@@ -362,7 +389,15 @@ class View
     <<-DOC
       <div id="footer">
         <div class='container'>
-          <p>&copy 2014 Masaki Kobayashi</p>
+          <div class="col-xs-6">
+            <p>&copy 2014 Masaki Kobayashi</p>
+          </div>
+          <div class="col-xs-6 links">
+            <p class="text-right">
+              <a href="index.cgi">検索画面に戻る</a>
+              <a href="#header">Topに戻る</a>
+            </p>
+          </div>
         </div>
       </div>
     DOC

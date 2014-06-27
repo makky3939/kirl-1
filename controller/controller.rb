@@ -25,6 +25,23 @@ end
 
 class Query
   def initialize(params)
+    @attribute = [
+      "book.nbc",
+      "isbn.isbn",
+      "book.title",
+      "book.author",
+      "book.pub",
+      "book.date",
+      "book.phys",
+      "note.note", 
+      "ed.ed",
+      "series.series",
+      "titleheading.titleheading",
+      "authorheading.authorheading",
+      "holdingsrecord.holdingsrecord",
+      "holdingloc.holdingloc",
+      "holdingphys.holdingphys"
+    ]
     @limit = params["limit"]
     @offset = params["offset"]
     @range = params["range"]
@@ -45,6 +62,11 @@ class Query
     @input_1_field = "title" if @input_1_field == ""
     @input_2_field = "title" if @input_2_field == ""
     @input_3_field = "title" if @input_3_field == ""
+
+    @input_1_field = "" if @input_1_field == "any"
+    @input_2_field = "" if @input_2_field == "any"
+    @input_3_field = "" if @input_3_field == "any"
+
     @input_1_operator_symbol = "and" if @input_1_operator_symbol == "" && @input_1_text != ""
     @input_2_operator_symbol = "and" if @input_2_operator_symbol == "" && @input_2_text != ""
     @input_3_operator_symbol = "and" if @input_3_operator_symbol == "" && @input_3_text != ""

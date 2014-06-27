@@ -18,6 +18,7 @@ params = {
   'input_2_text'            => CGI.escapeHTML(cgi['input_2_text']),
   'input_2_field'           => CGI.escapeHTML(cgi['input_2_field']),
   'input_2_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
+
   'input_3_text'            => CGI.escapeHTML(cgi['input_3_text']),
   'input_3_field'           => CGI.escapeHTML(cgi['input_3_field']),
   'input_3_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
@@ -33,14 +34,13 @@ if params['nbc'] != ''
   SQLite3::Database.new DB_FILE_PATH do |db|
     @result = db.execute query.select_detail
   end
-  view = View.new('詳細情報', 'detail', params, @result, 0)
+  view = View.new('詳細情報', 'detail', params, @result)
 else
   result = '検索に失敗しました'
-  view = View.new('詳細情報', 'detail_error', params, result, 0)
+  view = View.new('詳細情報', 'detail_error', params, result)
 end
 
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 
-puts params
-puts @result.map{|e|e.size}
+# puts params
