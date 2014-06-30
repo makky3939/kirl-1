@@ -37,7 +37,7 @@ if params['nbc'] != ''
   view = View.new('詳細情報', 'detail', params, @result)
 else
   result = '検索に失敗しました'
-  view = View.new('詳細情報', 'detail_error', params, result)
+  view = View.new('詳細情報', 'error', params, result)
 end
 
 puts cgi.header({charset: 'utf-8', type: 'text/html'})

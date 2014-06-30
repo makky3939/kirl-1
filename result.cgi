@@ -37,13 +37,13 @@ if params['input_1_text'] != '' || params['input_2_text'] != '' || params['input
   end
   if @count[0][0] == 0
     @result = '該当データが見つかりませんでした'
-    view = View.new('検索結果', 'result_error', params, @result)
+    view = View.new('検索結果', 'error', params, @result)
   else
     view = View.new('検索結果', 'result', params, @result, @count)
   end
 else
   result = '検索に失敗しました'
-  view = View.new('検索結果', 'result_error', params, result)
+  view = View.new('検索結果', 'error', params, result)
 end
 
 puts cgi.header({charset: 'utf-8', type: 'text/html'})

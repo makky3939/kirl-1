@@ -58,13 +58,13 @@ class View
       _detail_form = detail_form()
       @body = body(@page_header + _detail_form)
 
-    when "result_error", "detail_error"
+    when 'error'
       _detail_form = detail_form()
       _error = error(data)
       @body = body(@page_header + _error + _detail_form)
 
     else
-      @body = body("ページがありません")
+      @body = body('ページがありません')
     end
   end
 
@@ -115,7 +115,7 @@ class View
 
     tr = ''
     ['NBC', 'TITLE', 'AUTHOR', 'PUB', 'DATE'].each do |th|
-      tr += ['<th>', '</th>'].join th
+      tr << ['<th>', '</th>'].join(th)
     end
     thead = ['<thead>', '</thead>'].join tr
 
@@ -294,9 +294,9 @@ class View
       head = ["<h3>", "</h3>"].join head
       li = ""
       if info.nil?
-        li += ["<li>", "</li>"].join("データなし")
+        li << ["<li>", "</li>"].join("データなし")
       else
-        li += ["<li>", "</li>"].join(info)
+        li << ["<li>", "</li>"].join(info)
       end
       ul = ["<ul>", "</ul>"].join li
       head << ul
