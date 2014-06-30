@@ -23,7 +23,7 @@ params = {
   'input_3_field'           => CGI.escapeHTML(cgi['input_3_field']),
   'input_3_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
 
-  'nbc'   => CGI.escapeHTML(cgi['nbc']),
+  'nbc'     => CGI.escapeHTML(cgi['nbc']),
   'range'   => CGI.escapeHTML(cgi['range']),
   'limit'   => CGI.escapeHTML(cgi['limit']),
   'offset'  => CGI.escapeHTML(cgi['offset'])
