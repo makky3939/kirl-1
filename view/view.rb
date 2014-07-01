@@ -215,7 +215,7 @@ class View
               <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
             </div>
             <div class="input-group">
-              <input value='' name="input_1_text" type='text' class='form-control'>
+              <input value='' name="input_1_text" type='text' class='form-control' autofocus>
             </div>
 
             <div class="input-group">

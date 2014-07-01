@@ -23,6 +23,20 @@ def limit(offset=1, limit_size = 20)
   "#{offset}, #{limit}"
 end
 
+def outer_join
+  <<-SQL
+    LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
+    LEFT OUTER JOIN note on book.nbc = note.nbc
+    LEFT OUTER JOIN ed on book.nbc = ed.nbc
+    LEFT OUTER JOIN series on book.nbc = series.nbc
+    LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
+    LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
+    LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
+    LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
+    LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+  SQL
+end
+
 class Query
   def initialize(params)
     @attribute = [
@@ -73,35 +87,26 @@ class Query
     @input_3_operator_symbol = "and" if @input_3_operator_symbol == "" && @input_3_text != ""
 
     @where = ''
-    # if @input_type_single
-    #   @attribute.each do |att|
-    #     if att == 'book.nbc'
-    #       @where << "#{att} LIKE '%#{@input_1_text}%'"
-    #     else
-    #       @where << "or #{att} LIKE '%#{@input_1_text}%'"
-    #     end
-    #   end
-    # else
-    # @where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
-    # @where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
-    # @where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
-    # end
-    @where << "title LIKE '%コミュニケーションスキル%'"
+    if @input_type_single
+      @attribute.each do |att|
+        if att == 'book.nbc'
+          @where << "#{att} LIKE '%#{@input_1_text}%'"
+        else
+          @where << "or #{att} LIKE '%#{@input_1_text}%'"
+        end
+      end
+    else
+      @where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
+      @where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
+      @where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
+    end
   end
 
   def select
     <<-SQL
       SELECT DISTINCT book.nbc, book.title, book.author, book.pub, book.date
       FROM book
-      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
-      LEFT OUTER JOIN note on book.nbc = note.nbc
-      LEFT OUTER JOIN ed on book.nbc = ed.nbc
-      LEFT OUTER JOIN series on book.nbc = series.nbc
-      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
-      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
-      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
-      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
-      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+      #{outer_join}
 
       WHERE #{@where}
       LIMIT #{limit(@offset, @range)}
@@ -112,15 +117,7 @@ class Query
     <<-SQL
       SELECT count(DISTINCT book.nbc)
       FROM book 
-      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
-      LEFT OUTER JOIN note on book.nbc = note.nbc
-      LEFT OUTER JOIN ed on book.nbc = ed.nbc
-      LEFT OUTER JOIN series on book.nbc = series.nbc
-      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
-      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
-      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
-      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
-      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+      #{outer_join}
 
       WHERE #{@where}
     SQL
@@ -130,15 +127,7 @@ class Query
     <<-SQL
       SELECT book.nbc, isbn.isbn, book.title, book.author, book.pub, book.date, book.phys, note.note, ed.ed, series.series, titleheading.titleheading, authorheading.authorheading, holdingsrecord.holdingsrecord, holdingloc.holdingloc, holdingphys.holdingphys
       FROM book
-      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
-      LEFT OUTER JOIN note on book.nbc = note.nbc
-      LEFT OUTER JOIN ed on book.nbc = ed.nbc
-      LEFT OUTER JOIN series on book.nbc = series.nbc
-      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
-      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
-      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
-      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
-      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
+      #{outer_join}
 
       WHERE book.nbc = '#{@nbc}'
       LIMIT 1
