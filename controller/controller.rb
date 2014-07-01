@@ -1,45 +1,6 @@
 #!/usr/bin/ruby
 # -*- coding: utf-8 -*-
 
-def integer_str?(str)
-  begin
-    int = Integer(str)
-  rescue ArgumentError
-    int = nil
-  end
-  return int
-end
-
-def limit(offset=1, limit_size = 20)
-  if integer_str? offset
-    offset = offset.to_i
-  else
-    offset = 1
-  end
-  if integer_str? limit_size
-    limit_size = limit_size.to_i
-  else
-    limit_size = 20
-  end
-  limit = limit_size
-  offset = (limit_size * (offset - 1))
-  "#{offset}, #{limit}"
-end
-
-def outer_join
-  <<-SQL
-    LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
-    LEFT OUTER JOIN note on book.nbc = note.nbc
-    LEFT OUTER JOIN ed on book.nbc = ed.nbc
-    LEFT OUTER JOIN series on book.nbc = series.nbc
-    LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
-    LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
-    LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
-    LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
-    LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
-  SQL
-end
-
 class Query
   def initialize(params)
     @attribute = [
@@ -134,6 +95,46 @@ class Query
 
       WHERE book.nbc = '#{@nbc}'
       LIMIT 1
+    SQL
+  end
+
+  private
+  def integer_str?(str)
+    begin
+      int = Integer(str)
+    rescue ArgumentError
+      int = nil
+    end
+    return int
+  end
+
+  def limit(offset=1, limit_size = 20)
+    if integer_str? offset
+      offset = offset.to_i
+    else
+      offset = 1
+    end
+    if integer_str? limit_size
+      limit_size = limit_size.to_i
+    else
+      limit_size = 20
+    end
+    limit = limit_size
+    offset = (limit_size * (offset - 1))
+    "#{offset}, #{limit}"
+  end
+
+  def outer_join
+    <<-SQL
+      LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
+      LEFT OUTER JOIN note on book.nbc = note.nbc
+      LEFT OUTER JOIN ed on book.nbc = ed.nbc
+      LEFT OUTER JOIN series on book.nbc = series.nbc
+      LEFT OUTER JOIN titleheading on book.nbc = titleheading.nbc
+      LEFT OUTER JOIN authorheading on book.nbc = authorheading.nbc
+      LEFT OUTER JOIN holdingsrecord on book.nbc = holdingsrecord.nbc
+      LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
+      LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
     SQL
   end
 end
