@@ -29,9 +29,8 @@ gulp.task "concat", ->
 gulp.task "sass", ->
   gulp.src "src/sass/tmp/*.sass"
     .pipe plumber()
-    .pipe sass()
-    .pipe prefixer 'last 3 version'
-    .pipe mincss()
+    .pipe sass({style: 'expanded', noCache: true})
+    .pipe prefixer('last 3 version', 'ie 9', 'ie 8', 'ie 7')
     .pipe gulp.dest "../css/"
 
 gulp.task "bower", ->

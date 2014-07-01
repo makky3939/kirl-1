@@ -1,3 +1,6 @@
+#!/usr/bin/ruby
+# -*- coding: utf-8 -*-
+
 def integer_str?(str)
   begin
     int = Integer(str)
