@@ -23,7 +23,7 @@ params = {
   'input_3_field'           => CGI.escapeHTML(cgi['input_3_field']),
   'input_3_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
 
-  'nbc'   => CGI.escapeHTML(cgi['nbc']),
+  'nbc'     => CGI.escapeHTML(cgi['nbc']),
   'range'   => CGI.escapeHTML(cgi['range']),
   'limit'   => CGI.escapeHTML(cgi['limit']),
   'offset'  => CGI.escapeHTML(cgi['offset'])
@@ -37,7 +37,7 @@ if params['nbc'] != ''
   view = View.new('詳細情報', 'detail', params, @result)
 else
   result = '検索に失敗しました'
-  view = View.new('詳細情報', 'detail_error', params, result)
+  view = View.new('詳細情報', 'error', params, result)
 end
 
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
