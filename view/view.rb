@@ -51,7 +51,7 @@ class View
       @body = body(@page_header + _result_info + _table + _pagenation)
 
     when 'detail'
-      _detail = detail(data[0])
+      _detail = detail(data)
       @body = body(@page_header + _detail)
 
     when 'index'
@@ -295,17 +295,36 @@ class View
   end
 
   def detail(data)
+    def parse_data(data)
+      parse_data = []
+      (0..5).each do |i|
+        parse_data.push data[0][i]
+      end
+
+      (6..15).each do |i|
+        parse_data.push []
+        data.each do |row|
+          if !parse_data.last.include? row[i]
+            parse_data.last.push row[i] if !row[i].nil?
+          end
+        end
+      end
+      parse_data
+    end
     def detail_info(info, head)
       head = ["<h3>", "</h3>"].join head
       li = ""
-      if info.nil?
+      if info.size == 0
         li << ["<li>", "</li>"].join("データなし")
       else
-        li << ["<li>", "</li>"].join(info)
+        info.each do |item|
+          li << ["<li>", "</li>"].join(item)
+        end
       end
       ul = ["<ul>", "</ul>"].join li
       head << ul
     end
+    data = parse_data data
     <<-DOC
       <div class="container">
         <div class="col-xs-6">

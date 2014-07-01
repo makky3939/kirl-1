@@ -36,12 +36,21 @@ class Query
 
     @where = ''
     if @input_type_single
-      @attribute.each do |att|
-        if att == 'book.nbc'
-          @where << "#{att} LIKE '%#{@input_1_text}%'"
-        else
-          @where << "or #{att} LIKE '%#{@input_1_text}%'"
+      @input_1_text.split(/[\s　]/).each_with_index do |text, index|
+        where_temp = ''
+        @attribute.each do |att|
+          if att == 'book.nbc'
+            where_temp << "#{att} LIKE '%#{text}%'"
+          else
+            where_temp << " or #{att} LIKE '%#{text}%'"
+          end
         end
+        if index == 0
+          where_temp = ['(', ')'].join(where_temp)
+        else
+          where_temp = ' and ' + ['(', ')'].join(where_temp)
+        end
+        @where << where_temp
       end
     else
       @where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
@@ -78,11 +87,9 @@ class Query
       #{outer_join}
 
       WHERE book.nbc = '#{@nbc}'
-      LIMIT 1
     SQL
   end
 
-  private
   def integer_str?(str)
     begin
       int = Integer(str)
