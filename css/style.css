@@ -138,7 +138,7 @@ a:hover {
 .btn.btn-default {
   color: #4f5f6f;
   background-color: white;
-  border-color: #4f5f6f;
+  border-color: #dddddd;
 }
 .btn.btn-default:hover, .btn.btn-default:focus {
   border-color: #3ba2c5;
