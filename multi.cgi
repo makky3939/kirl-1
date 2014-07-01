@@ -28,18 +28,8 @@ params = {
   'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-if params['nbc'] != ''
-  query = Query.new(params)
-  SQLite3::Database.new DB_FILE_PATH do |db|
-    @result = db.execute query.select_detail
-  end
-  view = View.new('詳細情報', 'detail', params, @result)
-else
-  result = '検索に失敗しました'
-  view = View.new('詳細情報', 'error', params, result)
-end
-
+view = View.new('', 'multi', params)
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 
-# puts @result
+# puts params

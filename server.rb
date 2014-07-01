@@ -1,3 +1,6 @@
+#!/usr/bin/ruby
+# -*- coding: utf-8 -*-
+
 require 'webrick'
 module WEBrick
   module HTTPServlet

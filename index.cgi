@@ -13,7 +13,6 @@ cgi = CGI.new
 params = {
   'input_1_text'            => CGI.escapeHTML(cgi['input_1_text']),
   'input_1_field'           => CGI.escapeHTML(cgi['input_1_field']),
-  'input_1_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
 
   'input_2_text'            => CGI.escapeHTML(cgi['input_2_text']),
   'input_2_field'           => CGI.escapeHTML(cgi['input_2_field']),
@@ -23,13 +22,13 @@ params = {
   'input_3_field'           => CGI.escapeHTML(cgi['input_3_field']),
   'input_3_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
 
-  'nbc'   => CGI.escapeHTML(cgi['nbc']),
+  'nbc'     => CGI.escapeHTML(cgi['nbc']),
   'range'   => CGI.escapeHTML(cgi['range']),
   'limit'   => CGI.escapeHTML(cgi['limit']),
   'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-view = View.new('OPAC', 'index', params)
+view = View.new('', 'index', params)
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 

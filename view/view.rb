@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 class View
-  def initialize(title='OPAC', type='result_error', params={}, data=[], count=[[0]])
+  def initialize(title='', type='error', params={}, data=[], count=[[0]])
     @attribute = {
       nbc: '全国書誌番号',
       isbn: 'ISBN番号',
@@ -17,28 +17,32 @@ class View
       authorheading: '著者の読み',
       holdingsrecord: '所在情報の識別番号',
       holdingloc: '所在情報',
-      holdingphys: '所在注記',
-      any: '全項目'
+      holdingphys: '所在注記'
     }
 
-    @range ={
+    @range = {
       '20' => '20件',
       '40' => '40件',
       '60' => '60件'
     }
 
-    @operator_symbol = {and: 'AND', or: 'OR', not: 'NOT'}
+    @operator_symbol = {
+      and: 'AND',
+      or: 'OR',
+      not: 'NOT'
+    }
+
     @params = params
-    @title = title_tag title
-    @head = head
+    @title  = title_tag title
+    @head   = head
+    @count = count[0][0]
     @page_header = ['<div class="container">', '</div>'].join(head_tag title)
 
     case type
     when 'result'
-      @count = count[0][0]
       @offset = integer_str?(@params['offset'])
-      @offset = 1 if @offset == 0
       @range = integer_str?(@params['range'])
+      @offset = 1 if @offset == 0
       @range = 20 if @range == 0
       @page_sto = @offset * @range
       @page_sta = @page_sto - @range
@@ -46,25 +50,29 @@ class View
       @page_last = ((@count/@range)+1)
 
       _table = table(data)
-      _pagenation = pagenation()
+      _pagenation = pagenation
       _result_info = ['<div class="container">', '</div>'].join result_info()
       @body = body(@page_header + _result_info + _table + _pagenation)
 
     when 'detail'
-      _detail = detail(data[0])
+      _detail = detail(data)
       @body = body(@page_header + _detail)
 
     when 'index'
-      _detail_form = detail_form()
+      _form = form
+      @body = body(@page_header + _form)
+
+    when 'multi'
+      _detail_form = detail_form
       @body = body(@page_header + _detail_form)
 
-    when "result_error", "detail_error"
-      _detail_form = detail_form()
+    when 'error'
+      _form = form
       _error = error(data)
-      @body = body(@page_header + _error + _detail_form)
+      @body = body(@page_header + _error + _form)
 
     else
-      @body = body("ページがありません")
+      @body = body('ページがありません')
     end
   end
 
@@ -72,16 +80,18 @@ class View
     ['<html>', '</html>'].join(@head + @body)
   end
 
+  private
   def head
     ['<head>', '</head>'].join(@title + asset + meta)
   end
 
   def title_tag(title)
+    if title == ''
+      title = 'OPAC'
+    else
+      title = "#{title} | OPAC"
+    end
     ['<title>', '</title>'].join title
-  end
-
-  def head_tag(text, size=1)
-    ["<h#{size}>", "</h#{size}>"].join text
   end
 
   def asset
@@ -108,6 +118,15 @@ class View
     ['<body>', '</body>'].join(header + content + footer)
   end
 
+  def head_tag(text, size=1)
+    ['<h#{size}>', '</h#{size}>'].join text
+  end
+
+  def error(data)
+    error = ["<p class='error'>", "</p>"].join(data)
+    ['<div class="container">', '</div>'].join error
+  end
+
   def table(data)
     table = ''
     thead = ''
@@ -115,7 +134,7 @@ class View
 
     tr = ''
     ['NBC', 'TITLE', 'AUTHOR', 'PUB', 'DATE'].each do |th|
-      tr += ['<th>', '</th>'].join th
+      tr << ['<th>', '</th>'].join(th)
     end
     thead = ['<thead>', '</thead>'].join tr
 
@@ -135,21 +154,16 @@ class View
     ['<div class="container">', '</div>'].join table
   end
 
-  def error(data)
-    error = ["<p class='error'>", "</p>"].join(data)
-    ['<div class="container">', '</div>'].join error
-  end
-
   def result_info
     <<-DOC
-      <div class="col-xs-6">
-        <p class="lead">#{@count}件 のうち #{@page_sta}-#{@page_sto}件 を表示しています。</p>
+      <div class='col-xs-6'>
+        <p class='lead'>#{@count}件 のうち #{@page_sta}-#{@page_sto}件 を表示しています。</p>
       </div>
     DOC
   end
 
   def pagenation
-    list = ""
+    list = ''
     ((@count/@range)+1).times.each do |page|
       page = page + 1
       if page == @offset
@@ -159,19 +173,19 @@ class View
       end
     end
     <<-DOC
-      <div class="container">
-        <form action="result.cgi" method="post" name="pagenation">
-          <input type="hidden" name="offset">
-          <input type="hidden" name="input_1_text">
-          <input type="hidden" name="input_1_field">
-          <input type="hidden" name="input_2_text">
-          <input type="hidden" name="input_2_field">
-          <input type="hidden" name="input_2_operator_symbol">
-          <input type="hidden" name="input_3_text">
-          <input type="hidden" name="input_3_field">
-          <input type="hidden" name="input_3_operator_symbol">
+      <div class='container'>
+        <form action='result.cgi' method='post' name='pagenation'>
+          <input type='hidden' name='offset'>
+          <input type='hidden' name='input_1_text'>
+          <input type='hidden' name='input_1_field'>
+          <input type='hidden' name='input_2_text'>
+          <input type='hidden' name='input_2_field'>
+          <input type='hidden' name='input_2_operator_symbol'>
+          <input type='hidden' name='input_3_text'>
+          <input type='hidden' name='input_3_field'>
+          <input type='hidden' name='input_3_operator_symbol'>
         </form>
-        <script type="text/javascript">
+        <script type='text/javascript'>
           function pagenation_post(offset){
             pagenation.input_1_text.value = '#{@params["input_1_text"]}';
             pagenation.input_1_field.value = '#{@params["input_1_field"]}';
@@ -189,7 +203,7 @@ class View
           }
         </script>
         #{result_info}
-        <div class="col-xs-6">
+        <div class='col-xs-6'>
           <div class='text-center'>
             <ul class='pagination'>
               <li class='page_first'><a href='javascript: pagenation_post(#{@page_sta})'>&laquo;</a></li>
@@ -202,24 +216,25 @@ class View
     DOC
   end
 
-  def form()
+  def form
     <<-DOC
-      <div class="container">
-        <div class="row">
-          <form method="POST" action="result.cgi">
-            <div class="searchbox">
-              <div class="searchbox-simple">
-                <div class="input-group">
-                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
-                </div>
-                <div class="input-group">
-                  <input value='title' name="input_1_field" type='text' class='form-control'>
-                  <input value='' name="input_1_text" type='text' class='form-control'>
-                  <input type='submit' class='btn btn-default' value="search">
-                </div>
+      <div class='container'>
+        <div class='row'>
+          <form method='POST' action='result.cgi' class='search-form-single'>
+            <div class='input-group'>
+              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+            </div>
+            <div class='input-group'>
+              <input value='' name='input_1_text' type='text' class='form-control' autofocus>
+            </div>
+
+            <div class='input-group'>
+              <div class='form-group'>
+                <input type='submit' class='btn btn-blue' value='検索'>
               </div>
             </div>
           </form>
+          <a href='multi.cgi'>詳細検索</a>
         </div>
       </div>
     DOC
@@ -241,22 +256,22 @@ class View
     end
 
     def input_group(n)
-      input_field = "input_#{n}_field"
-      select_tag = "input_#{n}_operator_symbol"
+      input_field = 'input_#{n}_field'
+      select_tag = 'input_#{n}_operator_symbol'
       selected_key = [:title, :author, :pub]
       if n == 3
         <<-DOC
-          <div class="input-group">
+          <div class='input-group'>
             #{select_tag(@attribute, input_field, selected_key[n-1])}
-            <input value='' name="input_#{n}_text" type='text' class='form-control'>
+            <input value='' name='input_#{n}_text' type='text' class='form-control'>
           </div>
         DOC
       else
         <<-DOC
-          <div class="input-group">
+          <div class='input-group'>
             #{select_tag(@attribute, input_field, selected_key[n-1])}
-            <div class="form-group">
-              <input value='' name="input_#{n}_text" type='text' class='form-control'>
+            <div class='form-group'>
+              <input value='' name='input_#{n}_text' type='text' class='form-control'>
             </div>
             #{select_tag(@operator_symbol, select_tag)}  
           </div>
@@ -265,10 +280,10 @@ class View
     end
 
     <<-DOC
-      <div class="container">
-        <div class="row">
-          <form method="POST" action="result.cgi" class="form-inline">
-                <div class="input-group">
+      <div class='container'>
+        <div class='row'>
+          <form method='POST' action='result.cgi' class='form-inline'>
+                <div class='input-group'>
                   <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
                 </div>
 
@@ -276,10 +291,10 @@ class View
                 #{input_group(2)}
                 #{input_group(3)}
 
-                <div class="input-group">
-                  <div class="form-group">
-                    <input type='submit' class='btn btn-blue' value="検索">
-                    <input type='reset' class='btn btn-default' value="フォームを初期化">
+                <div class='input-group'>
+                  <div class='form-group'>
+                    <input type='submit' class='btn btn-blue' value='検索'>
+                    <input type='reset' class='btn btn-default' value='フォームを初期化'>
                   </div>
                 </div>
                 <p>1ページあたりの表示件数 #{select_tag(@range, 'range', '20')}</p>
@@ -290,58 +305,77 @@ class View
   end
 
   def detail(data)
-    def detail_info(info, head)
-      head = ["<h3>", "</h3>"].join head
-      li = ""
-      if info.nil?
-        li += ["<li>", "</li>"].join("データなし")
-      else
-        li += ["<li>", "</li>"].join(info)
+    def parse_data(data)
+      parse_data = []
+      (0..5).each do |i|
+        parse_data.push data[0][i]
       end
-      ul = ["<ul>", "</ul>"].join li
+
+      (6..15).each do |i|
+        parse_data.push []
+        data.each do |row|
+          if !parse_data.last.include? row[i]
+            parse_data.last.push row[i] if !row[i].nil?
+          end
+        end
+      end
+      parse_data
+    end
+    def detail_info(info, head)
+      head = ['<h3>', '</h3>'].join head
+      li = ''
+      if info.size == 0
+        li << ['<li>', '</li>'].join('データなし')
+      else
+        info.each do |item|
+          li << ['<li>', '</li>'].join(item)
+        end
+      end
+      ul = ['<ul>', '</ul>'].join li
       head << ul
     end
+    data = parse_data data
     <<-DOC
-      <div class="container">
-        <div class="col-xs-6">
-          <div class="book">
+      <div class='container'>
+        <div class='col-xs-6'>
+          <div class='book'>
             <p>#{data[0]} #{data[1]}</p>
-            <div class="book-head">
-              <h1 class="book-head_title">#{data[2]}</h1>
-              <p class="book-author">#{data[3]}</p>
+            <div class='book-head'>
+              <h1 class='book-head_title'>#{data[2]}</h1>
+              <p class='book-author'>#{data[3]}</p>
             </div>
 
-            <div class="book-publish">
+            <div class='book-publish'>
               <p>#{data[4]} #{data[5]}</p>
             </div>
           </div>
         </div>
 
-        <div class="col-xs-6">
-          <dic class="book-info">
-            #{detail_info(data[6], "形態")}
-            #{detail_info(data[7], "注記")}
-            #{detail_info(data[8], "版表示")}
-            #{detail_info(data[9], "シリーズ名")}
-            #{detail_info(data[10], "タイトルの読み")}
-            #{detail_info(data[11], "著者の読み")}
-            #{detail_info(data[12], "所在情報の識別番号")}
-            #{detail_info(data[13], "所在情報")}
-            #{detail_info(data[14], "所在情報の注記")}
+        <div class='col-xs-6'>
+          <dic class='book-info'>
+            #{detail_info(data[6], '形態')}
+            #{detail_info(data[7], '注記')}
+            #{detail_info(data[8], '版表示')}
+            #{detail_info(data[9], 'シリーズ名')}
+            #{detail_info(data[10], 'タイトルの読み')}
+            #{detail_info(data[11], '著者の読み')}
+            #{detail_info(data[12], '所在情報の識別番号')}
+            #{detail_info(data[13], '所在情報')}
+            #{detail_info(data[14], '所在情報の注記')}
           </div>
         </div>
       </div>
-      <div class="container">
-        <div class="col-xs-12 book-link">
-          <a class="btn btn-blue" href="javascript: booklink_post('author')">同じ著者の図書を検索する</a>
-          <a class="btn btn-blue" href="javascript: booklink_post('series')">同じシリーズの図書を検索する</a>
-          <a class="btn btn-blue" href="javascript: booklink_post('pub')">同じ出版者の図書を検索する</a>
+      <div class='container'>
+        <div class='col-xs-12 book-link'>
+          <a class='btn btn-blue' href="javascript: booklink_post('author')">同じ著者の図書を検索する</a>
+          <a class='btn btn-blue' href="javascript: booklink_post('series')">同じシリーズの図書を検索する</a>
+          <a class='btn btn-blue' href="javascript: booklink_post('pub')">同じ出版者の図書を検索する</a>
         </div>
-        <form action="result.cgi" method="post" name="book_link">
-          <input type="hidden" name="input_1_text">
-          <input type="hidden" name="input_1_field">
+        <form action='result.cgi' method='post' name='book_link'>
+          <input type='hidden' name='input_1_text'>
+          <input type='hidden' name='input_1_field'>
         </form>
-        <script type="text/javascript">
+        <script type='text/javascript'>
           function booklink_post(type){
             if(type == "author"){
               book_link.input_1_text.value = '#{data[3]}';
@@ -362,19 +396,19 @@ class View
 
   def header
     <<-DOC
-      <div id="header">
-        <div class="container">
-          <div class="col-xs-6">
-            <a href="index.cgi" class="title"><h1>OPAC</h1></a>
+      <div id='header'>
+        <div class='container'>
+          <div class='col-xs-6'>
+            <a href='index.cgi' class='title'><h1>OPAC</h1></a>
           </div>
-          <div class="col-xs-6">
-            <div class="col-xs-6"></div>
-            <div class="col-xs-6">
-              <form method="POST" action="result.cgi">
+          <div class='col-xs-6'>
+            <div class='col-xs-6'></div>
+            <div class='col-xs-6'>
+              <form method='POST' action='result.cgi'>
                 <div class='input-group'>
-                  <input value="" name="input_1_text" type='text' class='form-control'>
-                  <span class="input-group-btn">
-                    <input type='submit' class='btn btn-blue form-control' value="検索">
+                  <input value='' name='input_1_text' type='text' class='form-control'>
+                  <span class='input-group-btn'>
+                    <input type='submit' class='btn btn-blue form-control' value='検索'>
                   </span>
                 </div>
               </form>
@@ -387,15 +421,15 @@ class View
 
   def footer
     <<-DOC
-      <div id="footer">
+      <div id='footer'>
         <div class='container'>
-          <div class="col-xs-6">
+          <div class='col-xs-6'>
             <p>&copy 2014 Masaki Kobayashi</p>
           </div>
-          <div class="col-xs-6 links">
-            <p class="text-right">
-              <a href="index.cgi">検索画面に戻る</a>
-              <a href="#header">Topに戻る</a>
+          <div class='col-xs-6 links'>
+            <p class='text-right'>
+              <a href='index.cgi'>検索画面に戻る</a>
+              <a href='#header'>Topに戻る</a>
             </p>
           </div>
         </div>
