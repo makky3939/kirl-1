@@ -42,6 +42,7 @@ class Query
       "holdingloc.holdingloc",
       "holdingphys.holdingphys"
     ]
+    @input_type_single = false
     @limit = params["limit"]
     @offset = params["offset"]
     @range = params["range"]
@@ -59,27 +60,38 @@ class Query
     @input_3_field = params["input_3_field"]
     @input_3_operator_symbol = params["input_3_operator_symbol"]
 
+    if @input_1_field == "" && @input_2_field == "" && @input_3_field == ""
+      @input_type_single = true 
+    end
+
     @input_1_field = "title" if @input_1_field == ""
     @input_2_field = "title" if @input_2_field == ""
     @input_3_field = "title" if @input_3_field == ""
 
-    @input_1_field = "" if @input_1_field == "any"
-    @input_2_field = "" if @input_2_field == "any"
-    @input_3_field = "" if @input_3_field == "any"
-
-    @input_1_operator_symbol = "and" if @input_1_operator_symbol == "" && @input_1_text != ""
+    @input_1_operator_symbol = "and" if @input_1_operator_symbol == "" && @input_1_field != ""
     @input_2_operator_symbol = "and" if @input_2_operator_symbol == "" && @input_2_text != ""
     @input_3_operator_symbol = "and" if @input_3_operator_symbol == "" && @input_3_text != ""
+
+    @where = ''
+    # if @input_type_single
+    #   @attribute.each do |att|
+    #     if att == 'book.nbc'
+    #       @where << "#{att} LIKE '%#{@input_1_text}%'"
+    #     else
+    #       @where << "or #{att} LIKE '%#{@input_1_text}%'"
+    #     end
+    #   end
+    # else
+    # @where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
+    # @where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
+    # @where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
+    # end
+    @where << "title LIKE '%コミュニケーションスキル%'"
   end
 
   def select
-    where = ""
-    where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
-    where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
-    where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
-
     <<-SQL
-      SELECT book.nbc, book.title, book.author, book.pub, book.date
+      SELECT DISTINCT book.nbc, book.title, book.author, book.pub, book.date
       FROM book
       LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
       LEFT OUTER JOIN note on book.nbc = note.nbc
@@ -91,18 +103,14 @@ class Query
       LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
       LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
 
-      WHERE #{where}
+      WHERE #{@where}
       LIMIT #{limit(@offset, @range)}
     SQL
   end
 
   def count
-    where = ""
-    where << "#{@input_1_field} LIKE '%#{@input_1_text}%'"
-    where << "#{@input_2_operator_symbol} #{@input_2_field} LIKE '%#{@input_2_text}%'" if @input_2_text != ""
-    where << "#{@input_3_operator_symbol} #{@input_3_field} LIKE '%#{@input_3_text}%'" if @input_3_text != ""
     <<-SQL
-      SELECT count(*)
+      SELECT count(DISTINCT book.nbc)
       FROM book 
       LEFT OUTER JOIN isbn on book.nbc = isbn.nbc
       LEFT OUTER JOIN note on book.nbc = note.nbc
@@ -114,7 +122,7 @@ class Query
       LEFT OUTER JOIN holdingloc on book.nbc = holdingloc.nbc
       LEFT OUTER JOIN holdingphys on book.nbc = holdingphys.nbc
 
-      WHERE #{where}
+      WHERE #{@where}
     SQL
   end
 

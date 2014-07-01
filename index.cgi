@@ -29,7 +29,7 @@ params = {
   'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-view = View.new('OPAC', 'index', params)
+view = View.new('', 'index', params)
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 

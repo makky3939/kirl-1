@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 class View
-  def initialize(title='OPAC', type='result_error', params={}, data=[], count=[[0]])
+  def initialize(title='', type='error', params={}, data=[], count=[[0]])
     @attribute = {
       nbc: '全国書誌番号',
       isbn: 'ISBN番号',
@@ -17,8 +17,7 @@ class View
       authorheading: '著者の読み',
       holdingsrecord: '所在情報の識別番号',
       holdingloc: '所在情報',
-      holdingphys: '所在注記',
-      any: '全項目'
+      holdingphys: '所在注記'
     }
 
     @range ={
@@ -55,8 +54,8 @@ class View
       @body = body(@page_header + _detail)
 
     when 'index'
-      _detail_form = detail_form()
-      @body = body(@page_header + _detail_form)
+      _form = form
+      @body = body(@page_header + _form)
 
     when 'error'
       _detail_form = detail_form()
@@ -77,6 +76,11 @@ class View
   end
 
   def title_tag(title)
+    if title == ''
+      title = 'OPAC'
+    else
+      title = "#{title} | OPAC"
+    end
     ['<title>', '</title>'].join title
   end
 
@@ -206,17 +210,17 @@ class View
     <<-DOC
       <div class="container">
         <div class="row">
-          <form method="POST" action="result.cgi">
-            <div class="searchbox">
-              <div class="searchbox-simple">
-                <div class="input-group">
-                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
-                </div>
-                <div class="input-group">
-                  <input value='title' name="input_1_field" type='text' class='form-control'>
-                  <input value='' name="input_1_text" type='text' class='form-control'>
-                  <input type='submit' class='btn btn-default' value="search">
-                </div>
+          <form method="POST" action="result.cgi" class="search-form-single">
+            <div class="input-group">
+              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+            </div>
+            <div class="input-group">
+              <input value='' name="input_1_text" type='text' class='form-control'>
+            </div>
+
+            <div class="input-group">
+              <div class="form-group">
+                <input type='submit' class='btn btn-blue' value="検索">
               </div>
             </div>
           </form>

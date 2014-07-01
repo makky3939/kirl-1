@@ -131,8 +131,8 @@ a
 
   &.btn-default
     color: $DarkGray
-    background-color: #fff
-    border-color: #ccc
+    background-color: $White
+    border-color: $DarkGray
     &:hover,
     &:focus
       border-color: $Blue
@@ -233,7 +233,6 @@ a
 
   h1
     display: inline-block
-    padding: 0 8px
 
   a
     text-decoration: none
@@ -267,6 +266,21 @@ a
       &.active
         background: $Blue
         color: $White
+.search-form-single
+  width: 512px
+  margin: 128px auto 192px
+  .input-group
+    width: 100%
+    .form-control
+      height: 48px
+      font-size: 24px
+    p
+      font-size: 16px
+  .form-group
+    text-align: center
+    .btn
+      padding: 8px 32px
+      font-size: 16px
 // .searchbox
 //   height: 384px
 //   margin: 0 auto
