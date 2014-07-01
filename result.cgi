@@ -13,7 +13,6 @@ cgi = CGI.new
 params = {
   'input_1_text'            => CGI.escapeHTML(cgi['input_1_text']),
   'input_1_field'           => CGI.escapeHTML(cgi['input_1_field']),
-  'input_1_operator_symbol' => CGI.escapeHTML(cgi['input_1_operator_symbol']),
 
   'input_2_text'            => CGI.escapeHTML(cgi['input_2_text']),
   'input_2_field'           => CGI.escapeHTML(cgi['input_2_field']),
@@ -49,5 +48,5 @@ end
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 
-# puts params
+puts params
 puts query.select
