@@ -259,8 +259,8 @@ class View
     end
 
     def input_group(n)
-      input_field = 'input_#{n}_field'
-      select_tag = 'input_#{n}_operator_symbol'
+      input_field = "input_#{n}_field"
+      select_tag = "input_#{n}_operator_symbol"
       selected_key = [:title, :author, :pub]
       if n == 3
         <<-DOC
