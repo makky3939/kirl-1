@@ -59,6 +59,7 @@ body
 
 a
   color: $Blue
+  transition: .06s ease-in-out
   &:hover
     color: $DarkBlue
 
@@ -128,7 +129,7 @@ a
   border-radius: 4px
   user-select: none
   text-decoration: none
-  transition: .08s ease-in-out
+  transition: .06s ease-in-out
   &:focus
     outline: 0
 
@@ -149,6 +150,16 @@ a
     &:focus
       color: $Blue
       background-color: $White
+
+  &.btn-white_blue
+    background: $White
+    color: $Blue
+    border-color: $Blue
+    &:hover,
+    &:focus
+      background: $Blue
+      color: $White
+      border-color: $Blue
 
   &.btn-lg
     padding: 8px 16px
@@ -205,7 +216,7 @@ a
   background-image: none
   border: 1px solid $Gray
   border-radius: 4px
-  transition: .08s ease-in-out
+  transition: .06s ease-in-out
 
 .input-group-btn
   position: relative
@@ -270,7 +281,7 @@ a
       background-color: #fff
       border: 1px solid #ddd
       margin-left: -1px
-      transition: .08s ease-in-out
+      transition: .06s ease-in-out
       &:hover,
       &.active
         background: $Blue
@@ -333,7 +344,7 @@ th
     vertical-align: top
     border-bottom: 1px solid #ddd
     border-left: 4px solid transparent
-    transition: .08s ease-in-out
+    transition: .06s ease-in-out
 
   & > tbody > tr:hover > td:first-child
     border-left: 4px solid $Blue

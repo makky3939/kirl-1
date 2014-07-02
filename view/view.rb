@@ -235,7 +235,7 @@ class View
               </div>
             </div>
             <div class='input-group search-form-border'>
-              <a href='multi.cgi' class="btn btn-blue btn-lg">詳細検索</a>
+              <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
             </div>
           </form>
         </div>
