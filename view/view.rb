@@ -119,7 +119,7 @@ class View
   end
 
   def head_tag(text, size=1)
-    ['<h#{size}>', '</h#{size}>'].join text
+    ["<h#{size}>", "</h#{size}>"].join text
   end
 
   def error(data)
@@ -222,7 +222,8 @@ class View
         <div class='row'>
           <form method='POST' action='result.cgi' class='search-form-single'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+              <p>検索キーワードを入力してください。(例: 図書館学, 知識 情報, etc..)</p>
+              <p>全角、または半角スペースを空けることで複数語での検索ができます。</p>
             </div>
             <div class='input-group'>
               <input value='' name='input_1_text' type='text' class='form-control' autofocus>
@@ -233,8 +234,10 @@ class View
                 <input type='submit' class='btn btn-blue' value='検索'>
               </div>
             </div>
+            <div class='input-group search-form-border'>
+              <a href='multi.cgi' class="btn btn-blue btn-lg">詳細検索</a>
+            </div>
           </form>
-          <a href='multi.cgi'>詳細検索</a>
         </div>
       </div>
     DOC
@@ -282,22 +285,24 @@ class View
     <<-DOC
       <div class='container'>
         <div class='row'>
-          <form method='POST' action='result.cgi' class='form-inline'>
-                <div class='input-group'>
-                  <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
-                </div>
+          <form method='POST' action='result.cgi' class='form-inline search-form-multi'>
+            <div class='input-group'>
+              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+            </div>
 
-                #{input_group(1)}
-                #{input_group(2)}
-                #{input_group(3)}
+            #{input_group(1)}
+            #{input_group(2)}
+            #{input_group(3)}
 
-                <div class='input-group'>
-                  <div class='form-group'>
-                    <input type='submit' class='btn btn-blue' value='検索'>
-                    <input type='reset' class='btn btn-default' value='フォームを初期化'>
-                  </div>
-                </div>
-                <p>1ページあたりの表示件数 #{select_tag(@range, 'range', '20')}</p>
+            <div class='input-group'>
+              <div class='form-group'>
+                <input type='submit' class='btn btn-blue' value='検索'>
+                <input type='reset' class='btn btn-default' value='フォームを初期化'>
+              </div>
+            </div>
+            <div class='input-group search-form-border'>
+              <p>1ページあたりの表示件数 #{select_tag(@range, 'range', '20')}</p>
+            </div>
           </form>
         </div>
       </div>
