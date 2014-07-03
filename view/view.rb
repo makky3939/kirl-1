@@ -100,7 +100,7 @@ class View
 
   def asset
     <<-DOC
-      <link href='/css/style.css' rel='stylesheet'>
+      <link href='css/style.css' rel='stylesheet'>
     DOC
   end
 
@@ -145,7 +145,7 @@ class View
     data.each do |row|
       td = ''
       td << ['<td>', '</td>'].join(row[0])
-      td << ['<td>', '</td>'].join("<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
+      td << ['<td>', '</td>'].join("<a href='detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
       td << ['<td>', '</td>'].join(row[2])
       td << ['<td>', '</td>'].join(row[3])
       td << ['<td>', '</td>'].join(row[4])
@@ -240,6 +240,7 @@ class View
             <div class='input-group search-form-border'>
               <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
               <a href='analysis.cgi' class="btn btn-white_blue btn-lg">出現単語一覧</a>
+              <a href='report.pdf' class="btn btn-white_blue btn-lg" target=”_blank”>レポート</a>
             </div>
           </form>
         </div>
@@ -449,7 +450,7 @@ class View
           <div class='col-xs-6 links'>
             <p class='text-right'>
               <a href='index.cgi'>検索画面に戻る</a>
-              <a href='#header'>Topに戻る</a>
+              <a href='#header'>一番上に戻る</a>
             </p>
           </div>
         </div>
