@@ -100,7 +100,6 @@ class View
 
   def asset
     <<-DOC
-      <script src='/lib/jquery/dist/jquery.js'></script>
       <link href='/css/style.css' rel='stylesheet'>
     DOC
   end
@@ -240,6 +239,7 @@ class View
             </div>
             <div class='input-group search-form-border'>
               <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
+              <a href='analysis.cgi' class="btn btn-white_blue btn-lg">出現単語一覧</a>
             </div>
           </form>
         </div>
