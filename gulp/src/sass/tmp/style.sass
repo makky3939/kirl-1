@@ -26,6 +26,7 @@ $Green: #1ac174
   box-sizing: border-box
   margin: 0
   padding: 0
+  color: $DarkGray
 
 .container:before, .container:after, .container-fluid:before, .container-fluid:after, .row:before, .row:after, .form-horizontal .form-group:before, .form-horizontal .form-group:after, .btn-toolbar:before, .btn-toolbar:after, .btn-group-vertical>.btn-group:before, .btn-group-vertical>.btn-group:after, .nav:before, .nav:after, .navbar:before, .navbar:after, .navbar-header:before, .navbar-header:after, .navbar-collapse:before, .navbar-collapse:after, .pager:before, .pager:after, .panel-body:before, .panel-body:after, .modal-footer:before, .modal-footer:after
   content: " "
@@ -58,6 +59,7 @@ body
 
 a
   color: $Blue
+  transition: .06s ease-in-out
   &:hover
     color: $DarkBlue
 
@@ -127,6 +129,7 @@ a
   border-radius: 4px
   user-select: none
   text-decoration: none
+  transition: .06s ease-in-out
   &:focus
     outline: 0
 
@@ -147,6 +150,19 @@ a
     &:focus
       color: $Blue
       background-color: $White
+
+  &.btn-white_blue
+    background: $White
+    color: $Blue
+    border-color: $Blue
+    &:hover,
+    &:focus
+      background: $Blue
+      color: $White
+      border-color: $Blue
+
+  &.btn-lg
+    padding: 8px 16px
 .error
   line-height: 3em
   border-left: 4px solid $Pink
@@ -195,12 +211,12 @@ a
   padding: 6px 12px
   font-size: 14px
   line-height: 1.42857143
-  color: #555
-  background-color: #fff
+  color: $DarkGray
+  background-color: $White
   background-image: none
-  border: 1px solid #ccc
+  border: 1px solid $Gray
   border-radius: 4px
-  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+  transition: .06s ease-in-out
 
 .input-group-btn
   position: relative
@@ -265,25 +281,36 @@ a
       background-color: #fff
       border: 1px solid #ddd
       margin-left: -1px
+      transition: .06s ease-in-out
       &:hover,
       &.active
         background: $Blue
         color: $White
-.search-form-single
+.search-form-single,
+.search-form-multi
   width: 512px
-  margin: 128px auto 192px
+  margin: 64px auto 96px
+  p
+    font-size: 14px
+    line-height: 1.6
+    color: $DarkGray
+
+.search-form-single
   .input-group
     width: 100%
     .form-control
       height: 48px
       font-size: 24px
-    p
-      font-size: 16px
   .form-group
     text-align: center
     .btn
       padding: 8px 32px
       font-size: 16px
+
+.search-form-border
+  border-top: 2px solid $Gray
+  padding-top: 16px
+  display: block
 // .searchbox
 //   height: 384px
 //   margin: 0 auto
@@ -317,6 +344,7 @@ th
     vertical-align: top
     border-bottom: 1px solid #ddd
     border-left: 4px solid transparent
+    transition: .06s ease-in-out
 
   & > tbody > tr:hover > td:first-child
     border-left: 4px solid $Blue

@@ -1,15 +1,25 @@
-.search-form-single
+.search-form-single,
+.search-form-multi
   width: 512px
-  margin: 128px auto 192px
+  margin: 64px auto 96px
+  p
+    font-size: 14px
+    line-height: 1.6
+    color: $DarkGray
+
+.search-form-single
   .input-group
     width: 100%
     .form-control
       height: 48px
       font-size: 24px
-    p
-      font-size: 16px
   .form-group
     text-align: center
     .btn
       padding: 8px 32px
       font-size: 16px
+
+.search-form-border
+  border-top: 2px solid $Gray
+  padding-top: 16px
+  display: block
