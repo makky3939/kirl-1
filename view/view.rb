@@ -66,6 +66,10 @@ class View
       _detail_form = detail_form
       @body = body(@page_header + _detail_form)
 
+    when 'analysis'
+      _analysis = analysis(data)
+      @body = body(@page_header + _analysis)
+
     when 'error'
       _form = form
       _error = error(data)
@@ -96,7 +100,6 @@ class View
 
   def asset
     <<-DOC
-      <script src='/lib/jquery/dist/jquery.js'></script>
       <link href='/css/style.css' rel='stylesheet'>
     DOC
   end
@@ -236,6 +239,7 @@ class View
             </div>
             <div class='input-group search-form-border'>
               <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
+              <a href='analysis.cgi' class="btn btn-white_blue btn-lg">出現単語一覧</a>
             </div>
           </form>
         </div>
@@ -397,6 +401,17 @@ class View
         </script>
       </div>
     DOC
+  end
+
+  def analysis(data)
+    analysis = ''
+    data.each_with_index do |row, index|
+      analysis << "<a>#{row[0]} #{row[1]}</a>"
+      if (index % 100) == 0
+        analysis << "<hr>" 
+      end
+    end
+    ["<div class='container analysis'><p>登録されている図書のタイトルに２回以上出現したキーワードを表示しています</p><hr>", "</div>"].join analysis
   end
 
   def header

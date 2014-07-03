@@ -32,6 +32,14 @@
   width: 100%;
 }
 
+.analysis a {
+  padding: 4px;
+}
+.analysis hr {
+  margin: 16px 0;
+  border: 2px solid #dddddd;
+}
+
 body {
   margin: 0;
   padding: 0;

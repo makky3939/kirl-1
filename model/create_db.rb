@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'sqlite3'
+require 'natto'
 
 JBISC_FILE_PATH = 'jbisc.txt'
 # JBISC_FILE_PATH = 'jbisc.min.txt'
@@ -82,6 +83,13 @@ create: {
       holdingphys text
     );
   SQL
+
+  analysis:<<-SQL,
+    CREATE TABLE analysis(
+      word text,
+      count integer
+    );
+  SQL
   },
 
 insert: {
@@ -123,6 +131,10 @@ holdingloc:<<-SQL,
 
 holdingphys:<<-SQL,
     insert into holdingphys values(?, ?);
+  SQL
+
+analysis:<<-SQL,
+    insert into analysis values(?, ?);
   SQL
 },
 
@@ -206,6 +218,8 @@ end
 
 
 records = []
+parsed_key = {}
+natto = Natto::MeCab.new
 
 File.unlink DB_FILE_PATH if File.exist? DB_FILE_PATH
 
@@ -256,12 +270,24 @@ SQLite3::Database.new DB_FILE_PATH do |db|
       record["HOLDINGPHYS"].each do |holdingphys|
         db.execute query[:insert][:holdingphys], record["NBC"], holdingphys
       end
+
+
+      natto.parse(record['TITLE'][0]) do |item|
+         if item.feature.include?("名詞") && item.surface.size > 1
+          parsed_key[item.surface] = parsed_key[item.surface] ? parsed_key[item.surface] + 1 : 1
+        end
+      end
       print("Records: #{records.size}\r")
     end
     puts "\nEnd getRecord"
 
+    parsed_key = parsed_key.sort_by{|k, v| v}
+    parsed_key.reverse.each do |key, val|
+      db.execute query[:insert][:analysis], key, val
+    end
+
     query[:create].each do |key, val|
-      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}"
+      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}" if Integer(val) > 2
     end
   end
 end
