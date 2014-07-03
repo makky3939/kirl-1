@@ -100,7 +100,7 @@ class View
 
   def asset
     <<-DOC
-      <link href='/css/style.css' rel='stylesheet'>
+      <link href='css/style.css' rel='stylesheet'>
     DOC
   end
 
@@ -145,7 +145,7 @@ class View
     data.each do |row|
       td = ''
       td << ['<td>', '</td>'].join(row[0])
-      td << ['<td>', '</td>'].join("<a href='/detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
+      td << ['<td>', '</td>'].join("<a href='detail.cgi?nbc=#{row[0]}'> #{row[1]}</a>")
       td << ['<td>', '</td>'].join(row[2])
       td << ['<td>', '</td>'].join(row[3])
       td << ['<td>', '</td>'].join(row[4])
