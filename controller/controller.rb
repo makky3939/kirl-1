@@ -89,6 +89,13 @@ class Query
     SQL
   end
 
+  def analysis
+    <<-SQL
+      SELECT word, count
+      FROM analysis
+    SQL
+  end
+
   def integer_str?(str)
     begin
       int = Integer(str)

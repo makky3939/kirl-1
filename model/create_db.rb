@@ -273,7 +273,7 @@ SQLite3::Database.new DB_FILE_PATH do |db|
 
 
       natto.parse(record['TITLE'][0]) do |item|
-         if item.feature.include?("名詞")
+         if item.feature.include?("名詞") && item.surface.size > 1
           parsed_key[item.surface] = parsed_key[item.surface] ? parsed_key[item.surface] + 1 : 1
         end
       end
@@ -281,12 +281,13 @@ SQLite3::Database.new DB_FILE_PATH do |db|
     end
     puts "\nEnd getRecord"
 
-    query[:create].each do |key, val|
-      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}"
-    end
     parsed_key = parsed_key.sort_by{|k, v| v}
-    parsed_key.each do |key, val|
+    parsed_key.reverse.each do |key, val|
       db.execute query[:insert][:analysis], key, val
+    end
+
+    query[:create].each do |key, val|
+      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}" if Integer(val) > 2
     end
   end
 end
