@@ -127,6 +127,16 @@ a:hover {
   margin: 16px 0;
 }
 
+.book-holding {
+  border: 2px solid #4f5f6f;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 16px;
+}
+.book-holding ul {
+  list-style: none;
+}
+
 .btn {
   display: inline-block;
   margin-bottom: 0;
@@ -292,10 +302,10 @@ a:hover {
 #header a {
   text-decoration: none;
 }
-#header .title {
+#header .title h1 {
   color: #4f5f6f;
 }
-#header .title:hover, #header .title:focus {
+#header .title h1:hover, #header .title h1:focus {
   color: #237dac;
 }
 #header .input-group {
@@ -326,6 +336,44 @@ a:hover {
 .pagination > li > a:hover, .pagination > li > a.active, .pagination > li > span:hover, .pagination > li > span.active {
   background: #3ba2c5;
   color: white;
+}
+
+.report {
+  margin-top: 16px;
+}
+
+.report-container {
+  padding: 16px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #dddddd;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.report-container dt {
+  font-weight: bold;
+}
+.report-container dd {
+  margin-bottom: 8px;
+  padding-left: 8px;
+}
+.report-container table {
+  display: inline-block;
+  border: 1px solid #4f5f6f;
+}
+.report-container table th {
+  background: #dddddd;
+}
+.report-container table th,
+.report-container table td {
+  min-width: 128px;
+  padding: 4px 8px;
+}
+.report-container table span {
+  text-decoration: underline;
+}
+
+.report-container:last-child {
+  border-bottom: 0;
 }
 
 .search-form-single,

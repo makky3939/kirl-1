@@ -3,21 +3,21 @@
 class View
   def initialize(title='', type='error', params={}, data=[], count=[[0]])
     @attribute = {
-      nbc: '全国書誌番号',
-      isbn: 'ISBN番号',
-      title: '書名',
-      author: '著者',
-      pub: '出版者',
-      date: '出版年',
-      phys: '形態',
-      note: '注記',
-      ed: '版',
-      series: 'シリーズ',
-      titleheading: 'タイトルの読み',
-      authorheading: '著者の読み',
-      holdingsrecord: '所在情報の識別番号',
-      holdingloc: '所在情報',
-      holdingphys: '所在注記'
+      'nbc.nbc' => '全国書誌番号',
+      'isbn.isbn' => 'ISBN番号',
+      'book.title' => '書名',
+      'book.author' => '著者',
+      'book.pub' => '出版者',
+      'book.date' => '出版年',
+      'book.phys' => '形態',
+      'note.note' => '注記',
+      'ed.ed' => '版',
+      'series.series' => 'シリーズ',
+      'titleheading.titleheading' => 'タイトルの読み',
+      'authorheading.authorheading' => '著者の読み',
+      'holdingsrecord.holdingsrecord' => '所在情報の識別番号',
+      'holdingloc.holdingloc' => '所在情報',
+      'holdingphys.holdingphys' => '所在注記'
     }
 
     @range = {
@@ -75,8 +75,13 @@ class View
       _error = error(data)
       @body = body(@page_header + _error + _form)
 
+    when 'report'
+      _report = report
+      @body = body(@page_header + report)
+
     else
-      @body = body('ページがありません')
+      _error = error('ページが存在しません')
+      @body = body(_error)
     end
   end
 
@@ -244,7 +249,7 @@ class View
             <div class='input-group search-form-border'>
               <a href='multi.cgi' class="btn btn-white_blue">詳細検索</a>
               <a href='analysis.cgi' class="btn btn-white_blue">出現単語一覧</a>
-              <a href='report.pdf' class="btn btn-white_blue" target=”_blank”>レポート</a>
+              <a href='report.cgi' class="btn btn-white_blue" target=”_blank”>レポート</a>
             </div>
           </form>
         </div>
@@ -270,7 +275,7 @@ class View
     def input_group(n)
       input_field = "input_#{n}_field"
       select_tag = "input_#{n}_operator_symbol"
-      selected_key = [:title, :author, :pub]
+      selected_key = ['book.title', 'book.author', 'book.pub']
       if n == 3
         <<-DOC
           <div class='input-group'>
@@ -367,15 +372,17 @@ class View
 
         <div class='col-xs-6'>
           <dic class='book-info'>
+            <div class="book-holding">
+              #{detail_info(data[12], '所在情報の識別番号')}
+              #{detail_info(data[13], '所在情報')}
+              #{detail_info(data[14], '所在情報の注記')}
+            </div>
             #{detail_info(data[6], '形態')}
             #{detail_info(data[7], '注記')}
             #{detail_info(data[8], '版表示')}
             #{detail_info(data[9], 'シリーズ名')}
             #{detail_info(data[10], 'タイトルの読み')}
             #{detail_info(data[11], '著者の読み')}
-            #{detail_info(data[12], '所在情報の識別番号')}
-            #{detail_info(data[13], '所在情報')}
-            #{detail_info(data[14], '所在情報の注記')}
           </div>
         </div>
       </div>
@@ -418,6 +425,186 @@ class View
       end
     end
     ["<div class='container analysis'>#{comment}", "</div>"].join analysis
+  end
+
+  def report
+    <<-DOC
+      <div class='container report'>
+        <h2>A.</h2>
+        <div class="report-container">
+          <p>201311495, 小林 正樹, 知識情報演習 I-1(GE11012), 火曜組</p>
+        </div>
+
+        <h2>B.</h2>
+        <div class="report-container">
+          <p><a href="http://cgi.u.tsukuba.ac.jp/~s1311495/kirl/index.cgi" target="_brank">http://cgi.u.tsukuba.ac.jp/~s1311495/kirl/index.cgi</a></p>
+        </div>
+
+        <h2>C.</h2>
+        <div class="report-container">
+          <dl>
+            <dt>index.cgi</dt>
+            <dd>トップページ。検索フォームと、詳細検索ページ等へのリンクがある。</dd>
+            <dt>multi.cgi</dt>
+            <dd>詳細検索を行うページ。トップページの検索フォームとは異なり、検索する対象の指定と論理演算子の設定ができる。</dd>
+            <dt>result.cgi</dt>
+            <dd>検索結果を表示するページ。検索結果一覧の表が表示され、詳細情報ページへのリンクがある。</dd> 
+            <dt>detail.cgi</dt>
+            <dd>詳細画面を表示するページ。該当の図書に関するすべての情報を表示し、同じ著者や、シリーズ、出版社の情報で検索を行うためのボタンが配置されている。</dd>
+            <dt>analysis.cgi</dt>
+            <dd>データベースのtitleカラムに対して形態素解析を行い、名詞のみを取り出したものとその出現回数が表示される。各名詞はリンクになっており、クリックするとその名詞で検索を実行する。</dd>
+            <dt>report.cgi</dt>
+            <dd>当ページ。このOPACに関する情報が記載されている。</dd>
+            <dt>controller/controller.rb</dt>
+            <dd>データベースを参照するための SQLを作成するQueryクラスが記述されている。フォームのパラメータを受け取り、パラメータに応じてSQLを生成する。</dd>
+            <dt>view/view.rb</dt>
+            <dd>各HTMLの要素が含まれたViewクラスが記述されている。データベースの検索結果やフォームのパラメータを受け取り、それらを元に、各種HTMLの要素やテーブルを作成する。そしてhtmlメソッドを実行するとそれらを元にHTMLを生成する。</dd>
+          </dl>
+        </div>
+
+        <h2>D.</h2>
+        <div class="report-container">
+          <p>
+            基本的な情報は、bookテーブルに格納するが、1つの図書に対して複数の値が存在する要素についてはそれぞれ別のテーブルに格納している。
+            bookテーブル以外を参照する際にはnbcを主キーとして各項目を紐づけする。
+            また形態素解析を行い、名詞の出現頻度を格納したテーブルを用意した。以下に作成したテーブルの一覧を示す。
+          </p>
+          <table>
+            <thead>
+              <tr><th>Book</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>title</td></tr>
+              <tr><td>author</td></tr>
+              <tr><td>pub</td></tr>
+              <tr><td>date</td></tr>
+              <tr><td>phys</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>Isbn</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>isbn</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>Ed</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>ed</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>Series</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>series</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>TitleHeading</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>titleheading</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>AuthorHeading</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>authorheading</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>HoldingsRecord</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>holdingsrecord</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>HoldingLoc</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>holdingloc</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>HoldingsRecord</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>holdingsrecord</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>HoldingPhys</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span>nbc</span></td></tr>
+              <tr><td>holdingphys</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <thead>
+              <tr><th>Analysis</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>word</td></tr>
+              <tr><td>count</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>E.</h2>
+        <div class="report-container">
+          <p>
+            　HTMLは各CGIファイル内に記述するのではなく、Viewクラスを用意し、検索フォームやテーブルなどの部品ごとに分けてメソッドを実装した。
+            インスタンス変数を初期化する際に、SQLでの参照結果などを受け取り、それらのデータを用いて各メソッドがHTMLの部品を作成する。
+            そして、各CGIファイルからhtmlメソッドを実行することでHTMLを作成する。
+            CGIファイル内ではインスタンス変数の作成と特定のメソッドの実行のみを行い、Viewクラス内において、共通できる処理は共通のメソッド、独立させたいメソッドは独立させることにより高いメンテナンス性と、ページの追加やレイアウトの変更などの際の高い柔軟性を実現している。<br>
+            　またSQL文についてもQueryクラスを用意し、フォームから取得したパラメータを受け取ることで各ページにおいて必要なSQL文が呼び出せるようにした。
+          </p>
+        </div>
+
+        <h2>F.</h2>
+        <div class="report-container">
+          <p>
+            　図書のタイトルを対象に形態素解析を行い、名詞の出現回数を記録することで、データベースに含まれているデータが得意とする分野や概念のキーワードを、ユーザに提供することが出来るのではないかと考えた。
+            当OPACでは全データにおける名詞の出現回数とその名詞を表示し、クリックすると検索が実行出来る、また、Topページの検索キーワードの例を示す部分でランダムな名詞を表示するだけの機能である。
+            しかし、名詞を更に分析し、分野や概念ごとに色分けなどの処理を行うことで、検索キーワードの参考になる情報を提供する、又は検索キーワードを入力しなくても検索が行える機能を持ったOPACを開発することが出来るのではないかと感じた。
+          </p>
+        </div>
+      </div>
+    DOC
   end
 
   def header
