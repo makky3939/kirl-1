@@ -229,7 +229,7 @@ class View
         <div class='row'>
           <form method='POST' action='result.cgi' class='search-form-single'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>..)</p>
+              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>...)</p>
               <p>全角、または半角スペースを空けることで複数語での検索ができます。</p>
             </div>
             <div class='input-group'>
@@ -410,13 +410,14 @@ class View
 
   def analysis(data)
     analysis = ''
+    comment = "<p class='lead'>登録されている図書のタイトルに２回以上出現したキーワードを表示しています。</p><p>括弧の中の数値は出現回数を示しており、単語をクリックするとその語を用いて検索を行います。</p><hr>"
     data.each_with_index do |row, index|
-      analysis << "<a>#{row[0]} #{row[1]}</a>"
-      if (index % 100) == 0
+      analysis << "<a href='result.cgi?input_1_text=#{row[0]}'>#{row[0]}(#{row[1]})</a>"
+      if (index % 100) == 0 && index != 0
         analysis << "<hr>" 
       end
     end
-    ["<div class='container analysis'><p>登録されている図書のタイトルに２回以上出現したキーワードを表示しています</p><hr>", "</div>"].join analysis
+    ["<div class='container analysis'>#{comment}", "</div>"].join analysis
   end
 
   def header
