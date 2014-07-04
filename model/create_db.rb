@@ -283,11 +283,11 @@ SQLite3::Database.new DB_FILE_PATH do |db|
 
     parsed_key = parsed_key.sort_by{|k, v| v}
     parsed_key.reverse.each do |key, val|
-      db.execute query[:insert][:analysis], key, val
+      db.execute(query[:insert][:analysis], key, val) if val > 1
     end
 
     query[:create].each do |key, val|
-      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}" if Integer(val) > 2
+      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}"
     end
   end
 end
