@@ -86,7 +86,7 @@ class View
   end
 
   def html
-    ['<html>', '</html>'].join(@head + @body)
+    ['<!doctype html><html>', '</html>'].join(@head + @body)
   end
 
   private
