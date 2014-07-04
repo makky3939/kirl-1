@@ -59,11 +59,11 @@ class View
       @body = body(@page_header + _detail)
 
     when 'index'
-      _form = form
+      _form = form(data)
       @body = body(@page_header + _form)
 
     when 'multi'
-      _detail_form = detail_form
+      _detail_form = detail_form(data)
       @body = body(@page_header + _detail_form)
 
     when 'analysis'
@@ -71,7 +71,7 @@ class View
       @body = body(@page_header + _analysis)
 
     when 'error'
-      _form = form
+      _form = form()
       _error = error(data)
       @body = body(@page_header + _error + _form)
 
@@ -158,9 +158,13 @@ class View
   end
 
   def result_info
+    text = []
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_1_text"]}'>#{@params["input_1_text"]}</a>" if @params["input_1_text"] != ""
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_2_text"]}'>#{@params["input_2_text"]}</a>" if @params["input_2_text"] != ""
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_3_text"]}'>#{@params["input_3_text"]}</a>" if @params["input_3_text"] != ""
     <<-DOC
       <div class='col-xs-6'>
-        <p class='lead'>#{@count}件 のうち #{@page_sta}-#{@page_sto}件 を表示しています。</p>
+        <p class='lead'>#{text.join(', ')}で検索を行い、<span>#{@count}件</span>のうち<span>#{@page_sta}件</span>目から<span>#{@page_sto}件</span>目までを表示しています。</p>
       </div>
     DOC
   end
@@ -219,13 +223,13 @@ class View
     DOC
   end
 
-  def form
+  def form(data=['図書館', '英語'])
     <<-DOC
       <div class='container'>
         <div class='row'>
           <form method='POST' action='result.cgi' class='search-form-single'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください。(例: 図書館学, 知識 情報, etc..)</p>
+              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>...)</p>
               <p>全角、または半角スペースを空けることで複数語での検索ができます。</p>
             </div>
             <div class='input-group'>
@@ -238,9 +242,9 @@ class View
               </div>
             </div>
             <div class='input-group search-form-border'>
-              <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
-              <a href='analysis.cgi' class="btn btn-white_blue btn-lg">出現単語一覧</a>
-              <a href='report.pdf' class="btn btn-white_blue btn-lg" target=”_blank”>レポート</a>
+              <a href='multi.cgi' class="btn btn-white_blue">詳細検索</a>
+              <a href='analysis.cgi' class="btn btn-white_blue">出現単語一覧</a>
+              <a href='report.pdf' class="btn btn-white_blue" target=”_blank”>レポート</a>
             </div>
           </form>
         </div>
@@ -248,7 +252,7 @@ class View
     DOC
   end
 
-  def detail_form()
+  def detail_form(data=[])
     def select_tag(attr={}, name='', selected_key=false)
       select = ''
       option = ''
@@ -292,7 +296,7 @@ class View
         <div class='row'>
           <form method='POST' action='result.cgi' class='form-inline search-form-multi'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>...)</p>
             </div>
 
             #{input_group(1)}
@@ -406,13 +410,14 @@ class View
 
   def analysis(data)
     analysis = ''
+    comment = "<p class='lead'>登録されている図書のタイトルに２回以上出現したキーワードを表示しています。</p><p>括弧の中の数値は出現回数を示しており、単語をクリックするとその語を用いて検索を行います。</p><hr>"
     data.each_with_index do |row, index|
-      analysis << "<a>#{row[0]} #{row[1]}</a>"
-      if (index % 100) == 0
+      analysis << "<a href='result.cgi?input_1_text=#{row[0]}'>#{row[0]}(#{row[1]})</a>"
+      if (index % 100) == 0 && index != 0
         analysis << "<hr>" 
       end
     end
-    ["<div class='container analysis'><p>登録されている図書のタイトルに２回以上出現したキーワードを表示しています</p><hr>", "</div>"].join analysis
+    ["<div class='container analysis'>#{comment}", "</div>"].join analysis
   end
 
   def header
@@ -427,7 +432,7 @@ class View
             <div class='col-xs-6'>
               <form method='POST' action='result.cgi'>
                 <div class='input-group'>
-                  <input value='' name='input_1_text' type='text' class='form-control'>
+                  <input value='' name='input_1_text' type='text' class='form-control' placeholder='ここからも検索できます'>
                   <span class='input-group-btn'>
                     <input type='submit' class='btn btn-blue form-control' value='検索'>
                   </span>

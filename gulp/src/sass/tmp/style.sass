@@ -83,6 +83,8 @@ a
 
 .lead
   line-height: 33px
+  span
+    color: $Blue
 
 .book
   margin: 16px auto
@@ -300,6 +302,11 @@ a
     font-size: 14px
     line-height: 1.6
     color: $DarkGray
+  .form-group
+    text-align: center
+    .btn
+      font-size: 16px
+      padding: 8px 32px
 
 .search-form-single
   .input-group
@@ -307,16 +314,13 @@ a
     .form-control
       height: 48px
       font-size: 24px
-  .form-group
-    text-align: center
-    .btn
-      padding: 8px 32px
-      font-size: 16px
 
 .search-form-border
   border-top: 2px solid $Gray
-  padding-top: 16px
+  padding-top: 24px
   display: block
+  > .btn
+    padding: 8px 48px
 // .searchbox
 //   height: 384px
 //   margin: 0 auto

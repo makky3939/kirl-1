@@ -96,6 +96,15 @@ class Query
     SQL
   end
 
+  def analysis_random
+    <<-SQL
+      SELECT word
+      FROM analysis
+      ORDER BY RANDOM()
+      LIMIT 3
+    SQL
+  end
+
   def integer_str?(str)
     begin
       int = Integer(str)
