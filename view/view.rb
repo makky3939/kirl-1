@@ -63,7 +63,7 @@ class View
       @body = body(@page_header + _form)
 
     when 'multi'
-      _detail_form = detail_form
+      _detail_form = detail_form(data)
       @body = body(@page_header + _detail_form)
 
     when 'analysis'
@@ -71,7 +71,7 @@ class View
       @body = body(@page_header + _analysis)
 
     when 'error'
-      _form = form
+      _form = form()
       _error = error(data)
       @body = body(@page_header + _error + _form)
 
@@ -223,7 +223,7 @@ class View
     DOC
   end
 
-  def form(data=[])
+  def form(data=['図書館', '英語'])
     <<-DOC
       <div class='container'>
         <div class='row'>
@@ -242,9 +242,9 @@ class View
               </div>
             </div>
             <div class='input-group search-form-border'>
-              <a href='multi.cgi' class="btn btn-white_blue btn-lg">詳細検索</a>
-              <a href='analysis.cgi' class="btn btn-white_blue btn-lg">出現単語一覧</a>
-              <a href='report.pdf' class="btn btn-white_blue btn-lg" target=”_blank”>レポート</a>
+              <a href='multi.cgi' class="btn btn-white_blue">詳細検索</a>
+              <a href='analysis.cgi' class="btn btn-white_blue">出現単語一覧</a>
+              <a href='report.pdf' class="btn btn-white_blue" target=”_blank”>レポート</a>
             </div>
           </form>
         </div>
@@ -252,7 +252,7 @@ class View
     DOC
   end
 
-  def detail_form()
+  def detail_form(data=[])
     def select_tag(attr={}, name='', selected_key=false)
       select = ''
       option = ''
@@ -296,7 +296,7 @@ class View
         <div class='row'>
           <form method='POST' action='result.cgi' class='form-inline search-form-multi'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください (例: 図書館学, 知識 情報, etc..)</p>
+              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>...)</p>
             </div>
 
             #{input_group(1)}
@@ -432,7 +432,7 @@ class View
             <div class='col-xs-6'>
               <form method='POST' action='result.cgi'>
                 <div class='input-group'>
-                  <input value='' name='input_1_text' type='text' class='form-control'>
+                  <input value='' name='input_1_text' type='text' class='form-control' placeholder='ここからも検索できます'>
                   <span class='input-group-btn'>
                     <input type='submit' class='btn btn-blue form-control' value='検索'>
                   </span>

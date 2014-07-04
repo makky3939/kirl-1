@@ -339,6 +339,15 @@ a:hover {
   line-height: 1.6;
   color: #4f5f6f;
 }
+.search-form-single .form-group,
+.search-form-multi .form-group {
+  text-align: center;
+}
+.search-form-single .form-group .btn,
+.search-form-multi .form-group .btn {
+  font-size: 16px;
+  padding: 8px 32px;
+}
 
 .search-form-single .input-group {
   width: 100%;
@@ -347,18 +356,14 @@ a:hover {
   height: 48px;
   font-size: 24px;
 }
-.search-form-single .form-group {
-  text-align: center;
-}
-.search-form-single .form-group .btn {
-  padding: 8px 32px;
-  font-size: 16px;
-}
 
 .search-form-border {
   border-top: 2px solid #dddddd;
-  padding-top: 16px;
+  padding-top: 24px;
   display: block;
+}
+.search-form-border > .btn {
+  padding: 8px 48px;
 }
 
 table {
