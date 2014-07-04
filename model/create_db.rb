@@ -171,6 +171,15 @@ def defaultRecord
   }
 end
 
+def integer_str?(str)
+  begin
+    int = Integer(str)
+  rescue ArgumentError
+    int = nil
+  end
+  return int
+end
+
 def sliceAttribute input
   line = input.gets
   return nil if !line
@@ -271,9 +280,8 @@ SQLite3::Database.new DB_FILE_PATH do |db|
         db.execute query[:insert][:holdingphys], record["NBC"], holdingphys
       end
 
-
       natto.parse(record['TITLE'][0]) do |item|
-         if item.feature.include?("名詞") && item.surface.size > 1
+         if item.feature.include?("名詞") && item.surface.size > 1 && !integer_str?(item.surface)
           parsed_key[item.surface] = parsed_key[item.surface] ? parsed_key[item.surface] + 1 : 1
         end
       end
@@ -283,11 +291,11 @@ SQLite3::Database.new DB_FILE_PATH do |db|
 
     parsed_key = parsed_key.sort_by{|k, v| v}
     parsed_key.reverse.each do |key, val|
-      db.execute query[:insert][:analysis], key, val
+      db.execute(query[:insert][:analysis], key, val) if val > 1
     end
 
     query[:create].each do |key, val|
-      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}" if Integer(val) > 2
+      puts "#{key} size: #{db.execute("select count(*) from #{key}")[0][0]}"
     end
   end
 end

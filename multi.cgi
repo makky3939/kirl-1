@@ -28,7 +28,12 @@ params = {
   'offset'  => CGI.escapeHTML(cgi['offset'])
 }
 
-view = View.new('', 'multi', params)
+query = Query.new(params)
+SQLite3::Database.new DB_FILE_PATH do |db|
+  @random  = db.execute query.analysis_random
+end
+
+view = View.new('詳細検索', 'multi', params, @random)
 puts cgi.header({charset: 'utf-8', type: 'text/html'})
 puts view.html
 
