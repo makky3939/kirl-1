@@ -59,7 +59,7 @@ class View
       @body = body(@page_header + _detail)
 
     when 'index'
-      _form = form
+      _form = form(data)
       @body = body(@page_header + _form)
 
     when 'multi'
@@ -219,13 +219,13 @@ class View
     DOC
   end
 
-  def form
+  def form(data=[])
     <<-DOC
       <div class='container'>
         <div class='row'>
           <form method='POST' action='result.cgi' class='search-form-single'>
             <div class='input-group'>
-              <p>検索キーワードを入力してください。(例: 図書館学, 知識 情報, etc..)</p>
+              <p>検索キーワードを入力してください。(例: #{data.join(', ')}, <a href="analysis.cgi">etc</a>..)</p>
               <p>全角、または半角スペースを空けることで複数語での検索ができます。</p>
             </div>
             <div class='input-group'>
