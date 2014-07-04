@@ -4,3 +4,4 @@ gulp/.sass-cache
 gulp/node_modules
 jbisc.min.txt
 jbisc.txt
+library.db
