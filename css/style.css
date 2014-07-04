@@ -78,6 +78,9 @@ a:hover {
 .lead {
   line-height: 33px;
 }
+.lead span {
+  color: #3ba2c5;
+}
 
 .book {
   margin: 16px auto;

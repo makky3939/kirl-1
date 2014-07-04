@@ -280,7 +280,6 @@ SQLite3::Database.new DB_FILE_PATH do |db|
         db.execute query[:insert][:holdingphys], record["NBC"], holdingphys
       end
 
-
       natto.parse(record['TITLE'][0]) do |item|
          if item.feature.include?("名詞") && item.surface.size > 1 && !integer_str?(item.surface)
           parsed_key[item.surface] = parsed_key[item.surface] ? parsed_key[item.surface] + 1 : 1

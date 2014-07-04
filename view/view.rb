@@ -158,9 +158,13 @@ class View
   end
 
   def result_info
+    text = []
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_1_text"]}'>#{@params["input_1_text"]}</a>" if @params["input_1_text"] != ""
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_2_text"]}'>#{@params["input_2_text"]}</a>" if @params["input_2_text"] != ""
+    text.push "<a href='result.cgi?input_1_text=#{@params["input_3_text"]}'>#{@params["input_3_text"]}</a>" if @params["input_3_text"] != ""
     <<-DOC
       <div class='col-xs-6'>
-        <p class='lead'>#{@count}件 のうち #{@page_sta}-#{@page_sto}件 を表示しています。</p>
+        <p class='lead'>#{text.join(', ')}で検索を行い、<span>#{@count}件</span>のうち<span>#{@page_sta}件</span>目から<span>#{@page_sto}件</span>目までを表示しています。</p>
       </div>
     DOC
   end
